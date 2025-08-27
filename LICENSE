@@ -1,0 +1,101 @@
+MIT License
+
+Copyright (c) 2025 QLoRA Fine-tuning Project Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+THIRD-PARTY COMPONENTS
+================================================================================
+
+This project incorporates and builds upon the following open-source components:
+
+1. Qwen2.5-3B-Instruct Model
+   - Copyright: Alibaba Cloud
+   - License: Apache License 2.0
+   - Source: https://huggingface.co/Qwen/Qwen2.5-3B-Instruct
+
+2. Dolly-15k Dataset
+   - Copyright: Databricks
+   - License: Creative Commons Attribution-ShareAlike 3.0 Unported License
+   - Source: https://huggingface.co/datasets/databricks/databricks-dolly-15k
+
+3. QLoRA (Quantized Low-Rank Adaptation)
+   - Authors: Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, Luke Zettlemoyer
+   - License: MIT License
+   - Paper: https://arxiv.org/abs/2305.14314
+
+4. PEFT (Parameter-Efficient Fine-Tuning)
+   - Copyright: Hugging Face
+   - License: Apache License 2.0
+   - Source: https://github.com/huggingface/peft
+
+5. Transformers Library
+   - Copyright: Hugging Face
+   - License: Apache License 2.0
+   - Source: https://github.com/huggingface/transformers
+
+6. TRL (Transformer Reinforcement Learning)
+   - Copyright: Hugging Face
+   - License: Apache License 2.0
+   - Source: https://github.com/huggingface/trl
+
+7. FAISS (Facebook AI Similarity Search)
+   - Copyright: Meta Platforms, Inc.
+   - License: MIT License
+   - Source: https://github.com/facebookresearch/faiss
+
+8. Sentence Transformers
+   - Copyright: UKP Lab, Technische Universität Darmstadt
+   - License: Apache License 2.0
+   - Source: https://github.com/UKPLab/sentence-transformers
+
+9. Gradio
+   - Copyright: Gradio, Inc.
+   - License: Apache License 2.0
+   - Source: https://github.com/gradio-app/gradio
+
+================================================================================
+DISCLAIMER
+================================================================================
+
+This project is for educational and research purposes. The fine-tuned models
+and generated content should be used responsibly and in accordance with the
+original model licenses and terms of service.
+
+Users are responsible for ensuring compliance with all applicable laws and
+regulations when using this software, including but not limited to:
+- Data privacy and protection laws
+- Intellectual property rights
+- Export control regulations
+- AI ethics and responsible AI guidelines
+
+The authors and contributors of this project disclaim any responsibility for
+misuse of the software or any consequences arising from its use.
+
+================================================================================
+CONTRIBUTION
+================================================================================
+
+Contributions to this project are welcome and appreciated. By contributing,
+you agree that your contributions will be licensed under the same MIT License
+that covers the project.
+
+For more information about contributing, please refer to the project's
+README.md file and contribution guidelines.

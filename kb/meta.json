@@ -1,0 +1,17 @@
+{
+  "ids": [
+    "au_canberra_1913",
+    "ml_precision_recall",
+    "study_methods"
+  ],
+  "titles": [
+    "Canberra founding",
+    "Precision vs Recall",
+    "Study techniques"
+  ],
+  "texts": [
+    "The capital of Australia is Canberra. The name 'Canberra' was officially adopted and the city founded in 1913, following a decision to create a new capital rather than choose Sydney or Melbourne.",
+    "Precision is TP/(TP+FP) and measures the correctness of positive predictions. Recall is TP/(TP+FN) and measures coverage of actual positives. There is often a trade-off between the two.",
+    "Active recall, spaced repetition, and the Feynman technique are three evidence-backed study methods. Each has pros and cons depending on the learner and material."
+  ]
+}
