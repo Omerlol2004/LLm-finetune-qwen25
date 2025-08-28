@@ -9,7 +9,7 @@ Complete QLoRA fine-tuning pipeline for **Qwen2.5-3B-Instruct** with RAG integra
 ### 📊 Key Results
 - **Training**: 150 steps, 3.86-3.90 GB peak VRAM
 - **Performance**: ROUGE-L F1 0.2655 → 0.3351 (+26.2%)
-- **RAG Integration**: Factual accuracy improvement (Canberra: 1908 → 1913 correct)
+- **RAG Integration**: Factual accuracy improvement 
 - **Inference**: ~3.43s latency for complex queries
 
 ### 🛠️ Tech Stack
