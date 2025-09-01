@@ -1,6 +1,5 @@
 # QLoRA Fine-tuning: Qwen2.5-3B + RAG Integration 🚀
 
-**Status: ✅ PRODUCTION READY** | **ROUGE-L Improvement: +26.2%** | **4GB VRAM Compatible**
 
 ## 🎯 Project Overview
 
@@ -212,4 +211,3 @@ This project builds upon:
 
 ---
 
-**🎉 Ready for Production!** Complete QLoRA fine-tuning with RAG integration, optimized for consumer hardware.
