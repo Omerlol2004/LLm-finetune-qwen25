@@ -8,6 +8,7 @@ The main focus is practical experimentation on consumer hardware: training a 3B 
 
 - [Project Objective](#project-objective)
 - [Key Results](#key-results)
+- [Demo Video](#demo-video)
 - [System Overview](#system-overview)
 - [Core Workflow](#core-workflow)
 - [Training Methodology](#training-methodology)
@@ -53,6 +54,14 @@ The project also demonstrates a RAG correction case:
 | "When was Canberra founded?" | 1908 | 1913 | RAG retrieves the local fact and corrects the answer |
 
 These numbers are useful as project evidence, but they should be treated as experiment-specific results. Re-running training or evaluation on different hardware, seeds, dependency versions, or adapters may produce different values.
+
+## Demo Video
+
+The project includes a short browser recording of the local RAG question-answering flow:
+
+[Watch the local RAG demo](assets/qwen-local-rag-demo.mp4)
+
+The demo shows a user asking factual questions through a web interface with RAG enabled. The system retrieves relevant knowledge-base entries, such as the Canberra founding fact, and uses them to ground the answer.
 
 ## System Overview
 
@@ -199,6 +208,8 @@ The purpose is not to build a large production RAG system. It demonstrates how e
 |-- requirements.txt
 |-- test_canberra.py
 |-- release_qwen25_qlora.zip
+|-- assets/
+|   `-- qwen-local-rag-demo.mp4
 |-- kb/
 |   |-- facts.jsonl
 |   |-- index.faiss
