@@ -59,7 +59,9 @@ These numbers are useful as project evidence, but they should be treated as expe
 
 The project includes a short browser recording of the local RAG question-answering flow:
 
-[Watch the local RAG demo](assets/qwen-local-rag-demo.mp4)
+[![Local RAG demo preview](assets/qwen-local-rag-demo-preview.gif)](assets/qwen-local-rag-demo.mp4)
+
+[Watch the full local RAG demo video](assets/qwen-local-rag-demo.mp4)
 
 The demo shows a user asking factual questions through a web interface with RAG enabled. The system retrieves relevant knowledge-base entries, such as the Canberra founding fact, and uses them to ground the answer.
 
@@ -209,6 +211,7 @@ The purpose is not to build a large production RAG system. It demonstrates how e
 |-- test_canberra.py
 |-- release_qwen25_qlora.zip
 |-- assets/
+|   |-- qwen-local-rag-demo-preview.gif
 |   `-- qwen-local-rag-demo.mp4
 |-- kb/
 |   |-- facts.jsonl
