@@ -1,64 +1,79 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-import torch, time, os
+"""Hardware & 4-bit base model smoke test for 6 GB VRAM GPUs.
 
-MODEL_ID = "Qwen/Qwen2.5-3B-Instruct"
+Fixes over legacy implementation:
+- Uses dynamic ``bf16_supported()`` instead of hardcoded ``torch.bfloat16`` so
+  Turing/Volta GPUs (T4, RTX 20-series) fall back cleanly to ``torch.float16``.
+- Explicitly constructs and passes ``attention_mask`` and ``pad_token_id`` to
+  ``model.generate()``.
+"""
 
-def vram():
-    if torch.cuda.is_available():
-        free, total = torch.cuda.mem_get_info()
-        return f"{free//(1024**2)} / {total//(1024**2)} MB free/total"
-    return "CUDA not available"
+from __future__ import annotations
+
+from pathlib import Path
+import sys
+import time
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
+from engine import (  # noqa: E402
+    DEFAULT_BASE_MODEL,
+    bf16_supported,
+    build_bnb4_config,
+    generate_response,
+    load_qwen_model,
+    vram_status,
+)
+
+MODEL_ID = DEFAULT_BASE_MODEL
+
+
+def vram() -> str:
+    """Return free/total CUDA VRAM summary string."""
+    return vram_status()
+
 
 def build_bnb_config():
-    return BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.bfloat16,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-    )
+    """Build 4-bit NF4 quantization config with dynamic bf16/fp16 selection."""
+    return build_bnb4_config()
+
 
 def main():
-    print("CUDA:", torch.cuda.is_available(), "| VRAM:", vram())
+    import torch
+
+    print(
+        "CUDA:",
+        torch.cuda.is_available(),
+        "| bf16:",
+        bf16_supported(),
+        "| VRAM:",
+        vram(),
+    )
     print("Loading tokenizer/model:", MODEL_ID)
 
-    tok = AutoTokenizer.from_pretrained(MODEL_ID, use_fast=False)
+    tok, model = load_qwen_model(MODEL_ID, adapter_dir=None, load_adapter=False)
 
-    bnb_cfg = build_bnb_config()
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        device_map="auto",
-        quantization_config=bnb_cfg,
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=True,
-    )
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
-    messages = [
-        {"role": "system", "content": "You are a concise, helpful assistant."},
-        {"role": "user", "content": "Give me three bullet tips to stay focused while studying."},
-    ]
-    inputs = tok.apply_chat_template(
-        messages, tokenize=True, add_generation_prompt=True, return_tensors="pt"
-    ).to(model.device)
-
-    gen_kwargs = dict(
-        max_new_tokens=160,    # if OOM, try 96 or 64
-        do_sample=True,
+    t0 = time.time()
+    gen_text = generate_response(
+        tok,
+        model,
+        system="You are a concise, helpful assistant.",
+        user="Give me three bullet tips to stay focused while studying.",
+        max_new_tokens=160,
         temperature=0.7,
         top_p=0.9,
         repetition_penalty=1.05,
-        pad_token_id=tok.eos_token_id,
     )
-
-    torch.cuda.empty_cache()
-    t0 = time.time()
-    with torch.inference_mode():
-        out = model.generate(inputs, **gen_kwargs)
     dt = time.time() - t0
 
-    gen_text = tok.decode(out[0][inputs.shape[-1]:], skip_special_tokens=True).strip()
     print("\n--- MODEL OUTPUT ---\n", gen_text)
-    print(f"\nLatency: {dt:.2f}s | Tokens generated: {out.shape[-1]-inputs.shape[-1]}")
+    print(f"\nLatency: {dt:.2f}s")
     print("VRAM after generate:", vram())
+
 
 if __name__ == "__main__":
     main()

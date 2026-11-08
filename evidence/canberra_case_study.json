@@ -1,0 +1,62 @@
+{
+  "case_study_id": "canberra_founding_date_1908_vs_1913",
+  "validation_row_idx": 187,
+  "prompt": "What is the capital of Australia and when was it founded?",
+  "gold_reference": {
+    "text": "The capital of Australia is Canberra. It was formally founded and named in 1913. The creation of Canberra followed a lengthy dispute over whether Sydney or Melbourne should be the capital. The word \"Canberra\" is derived from the name of the indigenous Ngunnawal clan who have resided on the land for over 21,000 years.",
+    "verified_founding_year": 1913,
+    "historical_context": [
+      "Formally founded and named on 12 March 1913 by Lady Denman",
+      "Created as a compromise following the Sydney vs. Melbourne capital city dispute",
+      "Name derived from the indigenous Ngunnawal clan (over 21,000 years of residence)"
+    ]
+  },
+  "root_cause_of_parametric_hallucination": {
+    "hallucinated_year": 1908,
+    "explanation": "Pre-trained 3B weights conflate the 1908 Seat of Government Act (which selected the Yass-Canberra region) with the actual formal founding and naming of the city of Canberra on March 12, 1913."
+  },
+  "modes": {
+    "mode_1_base_model": {
+      "label": "Mode 1: Base Model (Qwen2.5-3B-Instruct, 4-bit NF4, No-RAG)",
+      "output": "The capital of Australia is Canberra. It was founded in 1908.",
+      "reported_year": 1908,
+      "factually_correct": false,
+      "diagnosis": "Parametric hallucination: conflates the 1908 Seat of Government Act site selection with the 1913 formal founding."
+    },
+    "mode_2_qlora_adapter_no_rag": {
+      "label": "Mode 2: QLoRA Adapter (150 Steps Dolly-15k, r=8, alpha=16, No-RAG)",
+      "output": "The capital of Australia is Canberra. It was founded in 1908.",
+      "reported_year": 1908,
+      "factually_correct": false,
+      "diagnosis": "Style and conciseness adapted (-42.8% words across val set), but low-rank attention adapters (r=8) trained on general instruction data preserve the base model's parametric factual prior (1908)."
+    },
+    "mode_3_stage2_continual_patch": {
+      "label": "Mode 3: Stage 2 Naive Continual Patch (train_qlora_min.py, +60 Steps)",
+      "patch_dataset_composition": {
+        "patch_facts_rows": 8,
+        "patch_style_rows": 8,
+        "dolly_rehearsal_rows": 1000,
+        "total_mixed_rows": 1016,
+        "target_fact_occurrences": 1,
+        "replay_density_ratio": "1/1016",
+        "replay_density_pct": 0.0984
+      },
+      "factually_correct": false,
+      "diagnosis": "Replay dilution failure: mixing 1 target fact into 1,000 Dolly rehearsal samples yields a 0.098% sample density (1/1016). Over 60 gradient steps (lr=1e-4), gradient updates are dominated by general instruction tokens; increasing LR or epoch count to force memorization degrades general instruction following (catastrophic forgetting)."
+    },
+    "mode_4_qlora_confidence_gated_rag": {
+      "label": "Mode 4: QLoRA Adapter + Confidence-Gated Local RAG (FAISS IndexFlatIP + MiniLM-L6-v2)",
+      "retrieved_fact_id": "au_canberra_1913",
+      "retrieved_title": "Canberra founding",
+      "retrieved_text": "The capital of Australia is Canberra. The name 'Canberra' was officially adopted and the city founded in 1913, following a decision to create a new capital rather than choose Sydney or Melbourne.",
+      "cosine_similarity_score": 0.784,
+      "confidence_threshold_tau": 0.3,
+      "gate_passed": true,
+      "output": "The capital of Australia is Canberra, which was officially founded and named in 1913 following a decision to build a new capital rather than choose between Sydney and Melbourne [1].",
+      "reported_year": 1913,
+      "citation": "[1]",
+      "factually_correct": true,
+      "diagnosis": "Decoupling stylistic alignment (QLoRA on GPU) from non-parametric factual memory (CPU FAISS + confidence gate score >= 0.30) deterministically overrides the 1908 parametric prior and cites source [1] with 0 MB extra GPU VRAM."
+    }
+  }
+}

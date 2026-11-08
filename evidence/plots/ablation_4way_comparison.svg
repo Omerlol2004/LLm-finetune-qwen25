@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 580" width="100%" height="100%" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace">
+  <defs>
+    <linearGradient id="bgAbl" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0f19"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="barGray" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="barBlue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="barAmber" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="barGreen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Main Card Background -->
+  <rect width="1100" height="580" rx="14" fill="url(#bgAbl)" stroke="#1f2937" stroke-width="2"/>
+
+  <!-- Header -->
+  <text x="36" y="42" fill="#f9fafb" font-size="20" font-weight="700" letter-spacing="0.3">4-Way System Ablation — Parametric Style Alignment vs. Non-Parametric Factual Grounding</text>
+  <text x="36" y="66" fill="#9ca3af" font-size="13">Evaluation on Dolly-15k Validation Set (n=30, seed=42) &amp; Canberra Tail-Fact Diagnostic (idx=187: "When was Canberra founded?")</text>
+
+  <!-- ======================================================================= -->
+  <!-- PANEL 1 (TOP LEFT): ROUGE-L F1 Score Comparison                         -->
+  <!-- ======================================================================= -->
+  <rect x="36" y="88" width="505" height="238" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="54" y="114" fill="#f8fafc" font-size="14" font-weight="700">1. Instruction Alignment Quality (ROUGE-L F1 ↑)</text>
+  <text x="54" y="132" fill="#94a3b8" font-size="11">Higher is better — QLoRA achieves +26.2% relative ROUGE-L gain over Base</text>
+
+  <!-- Bars for ROUGE-L (max scale = 0.40 -> 240px width from x=215) -->
+  <g transform="translate(54, 150)">
+    <!-- Config 1: Base Zero-Shot (0.2655 -> 159px) -->
+    <text x="0" y="15" fill="#cbd5e1" font-size="11.5" font-weight="600">1. Base Zero-Shot</text>
+    <rect x="160" y="2" width="159" height="20" rx="4" fill="url(#barGray)"/>
+    <text x="327" y="16" fill="#94a3b8" font-size="12" font-weight="700">0.2655 (baseline)</text>
+
+    <!-- Config 2: Base + Naive RAG (0.2790 -> 167px) -->
+    <text x="0" y="53" fill="#cbd5e1" font-size="11.5" font-weight="600">2. Base + Naive RAG</text>
+    <rect x="160" y="40" width="167" height="20" rx="4" fill="url(#barBlue)"/>
+    <text x="335" y="54" fill="#38bdf8" font-size="12" font-weight="700">0.2790 (+5.1%)</text>
+
+    <!-- Config 3: QLoRA Adapter No-RAG (0.3351 -> 201px) -->
+    <text x="0" y="91" fill="#cbd5e1" font-size="11.5" font-weight="600">3. QLoRA Adapter (r=8)</text>
+    <rect x="160" y="78" width="201" height="20" rx="4" fill="url(#barAmber)"/>
+    <text x="369" y="92" fill="#fbbf24" font-size="12" font-weight="700">0.3351 (+26.2%)</text>
+
+    <!-- Config 4: QLoRA + Gated RAG (0.3351 -> 201px) -->
+    <text x="0" y="129" fill="#f8fafc" font-size="11.5" font-weight="700">4. QLoRA + Gated RAG</text>
+    <rect x="160" y="116" width="201" height="20" rx="4" fill="url(#barGreen)" stroke="#34d399" stroke-width="1"/>
+    <text x="369" y="130" fill="#10b981" font-size="12" font-weight="700">0.3351 (+26.2%)</text>
+  </g>
+
+  <!-- ======================================================================= -->
+  <!-- PANEL 2 (TOP RIGHT): Response Length / Verbosity Compression            -->
+  <!-- ======================================================================= -->
+  <rect x="559" y="88" width="505" height="238" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="577" y="114" fill="#f8fafc" font-size="14" font-weight="700">2. Verbosity Compression (Avg Words / Answer ↓)</text>
+  <text x="577" y="132" fill="#94a3b8" font-size="11">Lower is more concise — QLoRA eliminates rambling filler (-42.8% words)</text>
+
+  <!-- Bars for Word Count (max scale = 80 words -> 220px width from x=160) -->
+  <g transform="translate(577, 150)">
+    <!-- Config 1: Base Zero-Shot (68.2w -> 187px) -->
+    <text x="0" y="15" fill="#cbd5e1" font-size="11.5" font-weight="600">1. Base Zero-Shot</text>
+    <rect x="160" y="2" width="187" height="20" rx="4" fill="url(#barGray)"/>
+    <text x="355" y="16" fill="#94a3b8" font-size="12" font-weight="700">68.2w (verbose)</text>
+
+    <!-- Config 2: Base + Naive RAG (71.4w -> 196px) -->
+    <text x="0" y="53" fill="#cbd5e1" font-size="11.5" font-weight="600">2. Base + Naive RAG</text>
+    <rect x="160" y="40" width="196" height="20" rx="4" fill="url(#barBlue)"/>
+    <text x="364" y="54" fill="#38bdf8" font-size="12" font-weight="700">71.4w (+4.7%)</text>
+
+    <!-- Config 3: QLoRA Adapter No-RAG (39.0w -> 107px) -->
+    <text x="0" y="91" fill="#cbd5e1" font-size="11.5" font-weight="600">3. QLoRA Adapter (r=8)</text>
+    <rect x="160" y="78" width="107" height="20" rx="4" fill="url(#barAmber)"/>
+    <text x="275" y="92" fill="#fbbf24" font-size="12" font-weight="700">39.0w (-42.8%)</text>
+
+    <!-- Config 4: QLoRA + Gated RAG (39.0w -> 107px) -->
+    <text x="0" y="129" fill="#f8fafc" font-size="11.5" font-weight="700">4. QLoRA + Gated RAG</text>
+    <rect x="160" y="116" width="107" height="20" rx="4" fill="url(#barGreen)" stroke="#34d399" stroke-width="1"/>
+    <text x="275" y="130" fill="#10b981" font-size="12" font-weight="700">39.0w (-42.8%)</text>
+  </g>
+
+  <!-- ======================================================================= -->
+  <!-- PANEL 3 (BOTTOM): Factual Grounding & Canberra Diagnostic Matrix        -->
+  <!-- ======================================================================= -->
+  <rect x="36" y="342" width="1028" height="208" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="54" y="368" fill="#f8fafc" font-size="14" font-weight="700">3. Factual Grounding &amp; Retrieval Gate Matrix — Canberra Founding Case Study (Gold Reference: 1913)</text>
+
+  <!-- Table Header -->
+  <rect x="54" y="382" width="992" height="28" rx="5" fill="#1e293b"/>
+  <g fill="#94a3b8" font-size="11" font-weight="700">
+    <text x="66" y="400">SYSTEM CONFIGURATION</text>
+    <text x="315" y="400">STYLE / CONCISENESS</text>
+    <text x="495" y="400">CANBERRA OUTPUT</text>
+    <text x="670" y="400">INTENT ROUTER BUG</text>
+    <text x="845" y="400">ARCHITECTURAL VERDICT</text>
+  </g>
+
+  <!-- Row 1: Base Zero-Shot -->
+  <g transform="translate(54, 416)" font-size="11.5">
+    <text x="12" y="18" fill="#cbd5e1" font-weight="600">1. Base Model (Zero-Shot)</text>
+    <text x="261" y="18" fill="#94a3b8">68.2w (ROUGE-L 0.2655)</text>
+    <rect x="440" y="3" width="132" height="21" rx="4" fill="#450a0a" stroke="#dc2626" stroke-width="1"/>
+    <text x="450" y="18" fill="#fca5a5" font-weight="700">1908 ❌ (Hallucinated)</text>
+    <text x="616" y="18" fill="#64748b">N/A (No RAG)</text>
+    <text x="791" y="18" fill="#f87171">Verbose &amp; factually ungrounded</text>
+  </g>
+  <line x1="54" y1="444" x2="1046" y2="444" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- Row 2: Base + Naive RAG -->
+  <g transform="translate(54, 448)" font-size="11.5">
+    <text x="12" y="18" fill="#cbd5e1" font-weight="600">2. Base + Naive Unfiltered RAG</text>
+    <text x="261" y="18" fill="#38bdf8">71.4w (ROUGE-L 0.2790)</text>
+    <rect x="440" y="3" width="132" height="21" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1"/>
+    <text x="450" y="18" fill="#6ee7b7" font-weight="700">1913 ✅ (Grounded)</text>
+    <text x="616" y="18" fill="#fbbf24">28.6% False Skip ("hi" in "which")</text>
+    <text x="791" y="18" fill="#38bdf8">Noisy top-k injection; verbose</text>
+  </g>
+  <line x1="54" y1="476" x2="1046" y2="476" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- Row 3: QLoRA Adapter No-RAG (+ Stage 2 Patch note) -->
+  <g transform="translate(54, 480)" font-size="11.5">
+    <text x="12" y="18" fill="#cbd5e1" font-weight="600">3. QLoRA Adapter (No-RAG / Patch)</text>
+    <text x="261" y="18" fill="#fbbf24" font-weight="600">39.0w (-42.8% | 0.3351)</text>
+    <rect x="440" y="3" width="132" height="21" rx="4" fill="#450a0a" stroke="#dc2626" stroke-width="1"/>
+    <text x="450" y="18" fill="#fca5a5" font-weight="700">1908 ❌ (Prior Retained)</text>
+    <text x="616" y="18" fill="#94a3b8">Patch replay 1/1016 (0.098%)</text>
+    <text x="791" y="18" fill="#fbbf24">Concise style, tail-fact gap remains</text>
+  </g>
+  <line x1="54" y1="508" x2="1046" y2="508" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- Row 4: QLoRA + Confidence-Gated RAG -->
+  <g transform="translate(54, 512)" font-size="11.5">
+    <rect x="0" y="0" width="992" height="26" rx="5" fill="#064e3b" fill-opacity="0.35" stroke="#10b981" stroke-width="1"/>
+    <text x="12" y="18" fill="#f8fafc" font-weight="700">4. QLoRA + Confidence-Gated RAG (τ=0.30)</text>
+    <text x="261" y="18" fill="#34d399" font-weight="700">39.0w (-42.8% | +26.2%)</text>
+    <rect x="440" y="3" width="132" height="20" rx="4" fill="#059669"/>
+    <text x="450" y="17" fill="#ffffff" font-weight="700">1913 ✅ (Score 0.78 [1])</text>
+    <text x="616" y="18" fill="#34d399" font-weight="700">0.0% False Skip (Regex \b)</text>
+    <text x="791" y="18" fill="#6ee7b7" font-weight="700">Optimal Style + Verified Facts</text>
+  </g>
+</svg>

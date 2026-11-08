@@ -1,31 +1,87 @@
-import os, argparse, math, torch
-from datasets import load_dataset
-from transformers import (
-    AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, TrainingArguments
+"""Primary QLoRA Supervised Fine-Tuning (SFT) trainer for Qwen2.5-3B-Instruct.
+
+Fixes over legacy implementation:
+- Properly wires ``--max_seq_len`` and ``--packing`` (with ``BooleanOptionalAction``
+  so ``--no-packing`` works) into ``SFTConfig`` / ``SFTTrainer``.
+- Preserves distinct ``<|endoftext|>`` pad token vs ``<|im_end|>`` turn-end EOS token.
+- Adds ``--target_all_linear`` flag to optionally include MLP projections
+  (``gate_proj``, ``up_proj``, ``down_proj``) alongside attention projections.
+"""
+
+from __future__ import annotations
+
+import argparse
+import inspect
+import math
+from pathlib import Path
+import sys
+from typing import Any, List
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
+from engine import (  # noqa: E402
+    DEFAULT_BASE_MODEL,
+    bf16_supported,
+    build_bnb4_config,
+    compute_dtype,
+    device_map_single,
+    load_tokenizer,
 )
-from peft import LoraConfig, prepare_model_for_kbit_training
-from trl import SFTTrainer
 
-def bf16_supported():
-    return torch.cuda.is_available() and torch.cuda.is_bf16_supported()
+ATTENTION_MODULES = ["q_proj", "k_proj", "v_proj", "o_proj"]
+ALL_LINEAR_MODULES = [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj",
+]
 
-def load_jsonl(train_path, val_path):
-    data_files = {"train": train_path, "validation": val_path}
-    ds = load_dataset("json", data_files=data_files)
-    return ds
 
-def format_messages(tokenizer, example):
-    # Convert {"messages": [...]} → chat template text
+def resolve_target_modules(target_all_linear: bool = False) -> List[str]:
+    """Return LoRA target module list for attention-only or all-linear adapters."""
+    return list(ALL_LINEAR_MODULES if target_all_linear else ATTENTION_MODULES)
+
+
+def load_jsonl(train_path: str, val_path: str):
+    """Load train and validation JSONL splits via Hugging Face ``datasets``."""
+    from datasets import load_dataset
+
+    data_files = {"train": str(train_path), "validation": str(val_path)}
+    return load_dataset("json", data_files=data_files)
+
+
+def format_messages(tokenizer: Any, example: dict) -> str:
+    """Convert ``{"messages": [...]}`` into ChatML text."""
     return tokenizer.apply_chat_template(
-        example["messages"], tokenize=False, add_generation_prompt=False
+        example["messages"],
+        tokenize=False,
+        add_generation_prompt=False,
     )
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model_id", type=str, default="Qwen/Qwen2.5-3B-Instruct")
-    parser.add_argument("--train_jsonl", type=str, default="data/processed/train.jsonl")
-    parser.add_argument("--val_jsonl", type=str, default="data/processed/val.jsonl")
-    parser.add_argument("--output_dir", type=str, default="checkpoints/qwen25-3b-dolly-qlora")
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="QLoRA SFT trainer for Qwen2.5-3B-Instruct")
+    parser.add_argument("--model_id", type=str, default=DEFAULT_BASE_MODEL)
+    parser.add_argument(
+        "--train_jsonl",
+        type=str,
+        default=str(PROJECT_ROOT / "data" / "processed" / "train.jsonl"),
+    )
+    parser.add_argument(
+        "--val_jsonl",
+        type=str,
+        default=str(PROJECT_ROOT / "data" / "processed" / "val.jsonl"),
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        default=str(PROJECT_ROOT / "checkpoints" / "qwen25-3b-dolly-qlora"),
+    )
     parser.add_argument("--max_seq_len", type=int, default=448)
     parser.add_argument("--per_device_train_batch_size", type=int, default=1)
     parser.add_argument("--gradient_accumulation_steps", type=int, default=32)
@@ -35,78 +91,92 @@ def main():
     parser.add_argument("--eval_steps", type=int, default=500)
     parser.add_argument("--save_steps", type=int, default=500)
     parser.add_argument("--logging_steps", type=int, default=20)
-    parser.add_argument("--packing", action="store_true", default=True)  # pack multiple samples per sequence
+    parser.add_argument(
+        "--packing",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Pack multiple short examples into a single sequence (--packing / --no-packing)",
+    )
+    parser.add_argument(
+        "--target_all_linear",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Attach LoRA to both attention and SwiGLU MLP projections (q/k/v/o/gate/up/down)",
+    )
+    parser.add_argument("--lora_r", type=int, default=8)
+    parser.add_argument("--lora_alpha", type=int, default=16)
+    parser.add_argument("--lora_dropout", type=float, default=0.05)
     parser.add_argument("--resume_from_checkpoint", type=str, default=None)
     parser.add_argument("--init_from_adapter", type=str, default=None)
-    args = parser.parse_args()
+    return parser
 
-    # Speed/precision knobs
-    torch.backends.cuda.matmul.allow_tf32 = True
-    dtype = torch.bfloat16 if bf16_supported() else torch.float16
+
+def main(argv=None):
+    import torch
+    from peft import LoraConfig, PeftModel, prepare_model_for_kbit_training
+    from transformers import AutoModelForCausalLM, TrainingArguments
+    from trl import SFTTrainer
+
+    args = build_parser().parse_args(argv)
+
+    if torch.cuda.is_available():
+        torch.backends.cuda.matmul.allow_tf32 = True
+    dtype = compute_dtype()
 
     print(">>> Loading tokenizer:", args.model_id)
-    tok = AutoTokenizer.from_pretrained(args.model_id, use_fast=False)
-    if tok.pad_token is None:
-        tok.pad_token = tok.eos_token
-        tok.pad_token_id = tok.eos_token_id
+    tok = load_tokenizer(args.model_id, for_training=True)
 
     print(">>> Loading base model in 4-bit …")
-    bnb_cfg = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=dtype,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-        llm_int8_enable_fp32_cpu_offload=True,
-    )
+    bnb_cfg = build_bnb4_config(enable_cpu_offload=True)
     model = AutoModelForCausalLM.from_pretrained(
         args.model_id,
-        device_map={"":0},
+        device_map=device_map_single(),
         quantization_config=bnb_cfg,
         torch_dtype=dtype,
         low_cpu_mem_usage=True,
     )
-    # crucial for memory
     model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
     model.config.use_cache = False
-
-    # Prepare model for k-bit training + attach LoRA
     model = prepare_model_for_kbit_training(model)
-    
+
     peft_cfg = None
     if args.init_from_adapter:
-        # Load existing LoRA adapters and keep them trainable
-        from peft import PeftModel
         model = PeftModel.from_pretrained(
             model,
             args.init_from_adapter,
             is_trainable=True,
         )
     else:
-        from peft import LoraConfig
+        target_modules = resolve_target_modules(args.target_all_linear)
+        print(f">>> Configuring LoRA (r={args.lora_r}, alpha={args.lora_alpha}, modules={target_modules})")
         peft_cfg = LoraConfig(
-            r=8, lora_alpha=16,
-            target_modules=["q_proj","k_proj","v_proj","o_proj"],  # attention only
-            lora_dropout=0.05, bias="none", task_type="CAUSAL_LM",
+            r=args.lora_r,
+            lora_alpha=args.lora_alpha,
+            target_modules=target_modules,
+            lora_dropout=args.lora_dropout,
+            bias="none",
+            task_type="CAUSAL_LM",
         )
 
     print(">>> Loading dataset …")
     ds = load_jsonl(args.train_jsonl, args.val_jsonl)
 
-    # map → text (leave tokenization to Trainer)
     def formatting_func(examples):
-        texts = []
-        for msgs in examples["messages"]:
-            texts.append(format_messages(tok, {"messages": msgs}))
+        texts = [format_messages(tok, {"messages": msgs}) for msgs in examples["messages"]]
         return {"text": texts}
 
     ds = ds.map(formatting_func, batched=True, remove_columns=ds["train"].column_names)
 
-    # TrainingArguments
     total_train_examples = len(ds["train"])
-    steps_per_epoch = math.ceil(total_train_examples / (args.per_device_train_batch_size * args.gradient_accumulation_steps))
-    print(f">>> Train examples: {total_train_examples} | steps/epoch≈{steps_per_epoch}")
+    steps_per_epoch = math.ceil(
+        total_train_examples / (args.per_device_train_batch_size * args.gradient_accumulation_steps)
+    )
+    print(
+        f">>> Train examples: {total_train_examples} | steps/epoch≈{steps_per_epoch} "
+        f"| max_seq_len={args.max_seq_len} | packing={args.packing}"
+    )
 
-    targs = TrainingArguments(
+    common_targs = dict(
         output_dir=args.output_dir,
         per_device_train_batch_size=args.per_device_train_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -128,13 +198,44 @@ def main():
         save_safetensors=True,
     )
 
-    trainer = SFTTrainer(
-        model=model,
-        train_dataset=ds["train"],
-        eval_dataset=ds["validation"],
-        args=targs,
-        **({"peft_config": peft_cfg} if peft_cfg is not None else {})
-    )
+    trainer_kwargs: dict[str, Any] = {
+        "model": model,
+        "train_dataset": ds["train"],
+        "eval_dataset": ds["validation"],
+    }
+    if peft_cfg is not None:
+        trainer_kwargs["peft_config"] = peft_cfg
+
+    # Support both modern TRL (SFTConfig) and older TRL (SFTTrainer kwargs)
+    try:
+        from trl import SFTConfig
+
+        sft_sig = inspect.signature(SFTConfig.__init__).parameters
+        sft_extra: dict[str, Any] = {"packing": bool(args.packing)}
+        if "max_seq_length" in sft_sig:
+            sft_extra["max_seq_length"] = int(args.max_seq_len)
+        elif "max_length" in sft_sig:
+            sft_extra["max_length"] = int(args.max_seq_len)
+        if "dataset_text_field" in sft_sig:
+            sft_extra["dataset_text_field"] = "text"
+        targs = SFTConfig(**common_targs, **sft_extra)
+    except ImportError:
+        targs = TrainingArguments(**common_targs)
+        trainer_sig = inspect.signature(SFTTrainer.__init__).parameters
+        if "max_seq_length" in trainer_sig:
+            trainer_kwargs["max_seq_length"] = int(args.max_seq_len)
+        if "packing" in trainer_sig:
+            trainer_kwargs["packing"] = bool(args.packing)
+        if "dataset_text_field" in trainer_sig:
+            trainer_kwargs["dataset_text_field"] = "text"
+
+    trainer_sig = inspect.signature(SFTTrainer.__init__).parameters
+    if "processing_class" in trainer_sig:
+        trainer_kwargs["processing_class"] = tok
+    elif "tokenizer" in trainer_sig:
+        trainer_kwargs["tokenizer"] = tok
+
+    trainer = SFTTrainer(args=targs, **trainer_kwargs)
 
     print(">>> Starting training …")
     trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
@@ -142,6 +243,7 @@ def main():
     trainer.model.save_pretrained(args.output_dir)
     tok.save_pretrained(args.output_dir)
     print(">>> Done. Adapters saved to:", args.output_dir)
+
 
 if __name__ == "__main__":
     main()

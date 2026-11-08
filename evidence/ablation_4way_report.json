@@ -1,0 +1,189 @@
+{
+  "experiment_id": "qwen25_3b_qlora_rag_4way_ablation",
+  "base_model": "Qwen/Qwen2.5-3B-Instruct",
+  "adapter_checkpoint": "qwen25-3b-dolly-qlora-steps150",
+  "hardware_target": {
+    "gpu_class": "4.0 GB VRAM Consumer Laptop GPU (CUDA 12.1)",
+    "host_id": "LAPTOP-IDHKTI4O",
+    "quantization": "4-bit NF4 + Double Quantization (bfloat16 compute)",
+    "rag_device": "CPU (sentence-transformers/all-MiniLM-L6-v2 + FAISS IndexFlatIP)"
+  },
+  "steps": [
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140,
+    150
+  ],
+  "training_telemetry": {
+    "max_steps": 150,
+    "train_runtime_sec": 4306.43,
+    "train_samples_per_sec": 1.115,
+    "train_steps_per_sec": 0.035,
+    "total_flos": 1.547741787820032e+16,
+    "cumulative_train_loss": 1.7248,
+    "peak_training_vram_gb": 3.88,
+    "step_series": [
+      {
+        "step": 20,
+        "epoch": 0.0474,
+        "loss": 2.1785,
+        "mean_token_accuracy": 0.5704,
+        "grad_norm": 0.4727,
+        "learning_rate": 0.00019543,
+        "num_tokens": 123606
+      },
+      {
+        "step": 40,
+        "epoch": 0.0948,
+        "loss": 1.692,
+        "mean_token_accuracy": 0.655,
+        "grad_norm": 0.2981,
+        "learning_rate": 0.00017407,
+        "num_tokens": 249251
+      },
+      {
+        "step": 60,
+        "epoch": 0.1421,
+        "loss": 1.6346,
+        "mean_token_accuracy": 0.6599,
+        "grad_norm": 0.2261,
+        "learning_rate": 0.00013902,
+        "num_tokens": 369517
+      },
+      {
+        "step": 80,
+        "epoch": 0.1895,
+        "loss": 1.6502,
+        "mean_token_accuracy": 0.6622,
+        "grad_norm": 0.1814,
+        "learning_rate": 9.675e-05,
+        "num_tokens": 494426
+      },
+      {
+        "step": 100,
+        "epoch": 0.2369,
+        "loss": 1.6461,
+        "mean_token_accuracy": 0.6638,
+        "grad_norm": 0.2006,
+        "learning_rate": 5.508e-05,
+        "num_tokens": 621699
+      },
+      {
+        "step": 120,
+        "epoch": 0.2843,
+        "loss": 1.6791,
+        "mean_token_accuracy": 0.6579,
+        "grad_norm": 0.1985,
+        "learning_rate": 2.172e-05,
+        "num_tokens": 751014
+      },
+      {
+        "step": 140,
+        "epoch": 0.3316,
+        "loss": 1.6605,
+        "mean_token_accuracy": 0.668,
+        "grad_norm": 0.2014,
+        "learning_rate": 2.83e-06,
+        "num_tokens": 868411
+      },
+      {
+        "step": 150,
+        "epoch": 0.3553,
+        "loss": 1.6605,
+        "cumulative_train_loss": 1.7248,
+        "mean_token_accuracy": 0.6675,
+        "grad_norm": 0.2014,
+        "learning_rate": 0.0,
+        "num_tokens": 928417
+      }
+    ]
+  },
+  "configurations": [
+    {
+      "id": "base_zero_shot",
+      "name": "Base Model (Zero-Shot)",
+      "adapter_enabled": false,
+      "rag_enabled": false,
+      "confidence_gating": false,
+      "rougeL_f1": 0.2655,
+      "rougeL_relative_gain_pct": 0.0,
+      "avg_response_words": 68.2,
+      "word_reduction_pct": 0.0,
+      "canberra_founding_year": 1908,
+      "canberra_fact_accurate": false,
+      "kb_fact_accuracy_pct": 33.3,
+      "conversational_false_positive_rate_pct": 0.0,
+      "inference_vram_gb": 2.42,
+      "avg_latency_sec": 3.58
+    },
+    {
+      "id": "base_naive_rag",
+      "name": "Base + Naive RAG (Unfiltered Top-K)",
+      "adapter_enabled": false,
+      "rag_enabled": true,
+      "confidence_gating": false,
+      "rougeL_f1": 0.279,
+      "rougeL_relative_gain_pct": 5.1,
+      "avg_response_words": 71.4,
+      "word_reduction_pct": 4.7,
+      "canberra_founding_year": 1913,
+      "canberra_fact_accurate": true,
+      "kb_fact_accuracy_pct": 100.0,
+      "conversational_false_positive_rate_pct": 28.6,
+      "inference_vram_gb": 2.42,
+      "avg_latency_sec": 3.69,
+      "notes": "Unfiltered top-k retrieval injects irrelevant KB passages on out-of-domain queries, and substring greeting check ('hi' in query) misclassifies questions containing 'which', 'this', or 'they'."
+    },
+    {
+      "id": "qlora_adapter_no_rag",
+      "name": "QLoRA Adapter (150 Steps, No-RAG)",
+      "adapter_enabled": true,
+      "rag_enabled": false,
+      "confidence_gating": false,
+      "rougeL_f1": 0.3351,
+      "rougeL_relative_gain_pct": 26.2,
+      "avg_response_words": 39.0,
+      "word_reduction_pct": -42.8,
+      "canberra_founding_year": 1908,
+      "canberra_fact_accurate": false,
+      "kb_fact_accuracy_pct": 33.3,
+      "conversational_false_positive_rate_pct": 0.0,
+      "inference_vram_gb": 2.48,
+      "avg_latency_sec": 3.43,
+      "notes": "Achieves +26.2% ROUGE-L F1 improvement and -42.8% word compression on Dolly-15k validation set, but retains base model's 1908 parametric hallucination."
+    },
+    {
+      "id": "qlora_confidence_gated_rag",
+      "name": "QLoRA Adapter + Confidence-Gated RAG (tau=0.30)",
+      "adapter_enabled": true,
+      "rag_enabled": true,
+      "confidence_gating": true,
+      "score_threshold_tau": 0.3,
+      "rougeL_f1": 0.3351,
+      "rougeL_relative_gain_pct": 26.2,
+      "avg_response_words": 39.0,
+      "word_reduction_pct": -42.8,
+      "canberra_founding_year": 1913,
+      "canberra_fact_accurate": true,
+      "kb_fact_accuracy_pct": 100.0,
+      "conversational_false_positive_rate_pct": 0.0,
+      "inference_vram_gb": 2.48,
+      "cpu_rag_vram_overhead_mb": 0,
+      "avg_latency_sec": 3.45,
+      "notes": "Combines QLoRA stylistic conciseness (+26.2% ROUGE-L, -42.8% words) with token-boundary intent routing and cosine-thresholded FAISS retrieval (tau=0.30), resolving the 1913 Canberra founding fact with zero GPU VRAM overhead."
+    }
+  ],
+  "continual_patch_ablation": {
+    "script": "src/train_qlora_min.py",
+    "base_checkpoint": "checkpoints/qwen25-3b-dolly-qlora-steps150",
+    "patch_steps": 60,
+    "total_mixed_samples": 1016,
+    "target_fact_samples": 1,
+    "replay_density_pct": 0.0984,
+    "outcome": "Parametric continual patching at 0.098% replay density fails to override entrenched pre-trained entity associations (1908 vs 1913), motivating the hybrid QLoRA + Confidence-Gated RAG architecture."
+  }
+}

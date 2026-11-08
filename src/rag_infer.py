@@ -1,91 +1,125 @@
-import os, json, time, torch
-import faiss
-from sentence_transformers import SentenceTransformer
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
-from peft import PeftModel
+"""Standalone RAG inference demo with Confidence-Gated Retrieval.
 
-BASE = "Qwen/Qwen2.5-3B-Instruct"
-ADAPTER_DIR = "checkpoints/qwen25-3b-dolly-qlora-steps150"
-KB_DIR = "kb"
-INDEX_PATH = os.path.join(KB_DIR, "index.faiss")
-META_PATH  = os.path.join(KB_DIR, "meta.json")
+Fixes over legacy implementation:
+- Uses centralized ``src/engine.py`` and ``src/rag_utils.py`` instead of duplicating
+  FAISS and ``BitsAndBytesConfig`` boilerplate.
+- Bounds ``top_k <= index.ntotal`` and enforces ``--score_threshold`` (default ``0.30``)
+  so irrelevant passages and ``-1`` FAISS sentinel indices are never injected.
+"""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+import sys
+import time
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
+from engine import (  # noqa: E402
+    DEFAULT_ADAPTER_DIR,
+    DEFAULT_BASE_MODEL,
+    DEFAULT_KB_DIR,
+    build_bnb4_config,
+    generate_response,
+    load_qwen_model,
+)
+from rag_utils import (  # noqa: E402
+    build_rag_prompt,
+    context_block,
+    init_kb,
+    retrieve as retrieve_kb,
+)
+
+BASE = DEFAULT_BASE_MODEL
+ADAPTER_DIR = str(DEFAULT_ADAPTER_DIR)
+KB_DIR = str(DEFAULT_KB_DIR)
+
 
 def bnb4():
-    return BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-    )
+    """Return 4-bit NF4 quantization config."""
+    return build_bnb4_config()
 
-def load_llm():
-    tok = AutoTokenizer.from_pretrained(BASE, use_fast=False)
-    if tok.pad_token is None:
-        tok.pad_token = tok.eos_token
-        tok.pad_token_id = tok.eos_token_id
-    base = AutoModelForCausalLM.from_pretrained(
-        BASE, device_map={"":0} if torch.cuda.is_available() else {"":"cpu"},
-        quantization_config=bnb4(),
-        torch_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
-        low_cpu_mem_usage=True,
-    )
-    model = PeftModel.from_pretrained(
-        base, ADAPTER_DIR,
-        device_map={"":0} if torch.cuda.is_available() else {"":"cpu"},
-        torch_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
-    )
-    model.config.use_cache = True
-    model.eval()
-    return tok, model
 
-def load_kb():
-    index = faiss.read_index(INDEX_PATH)
-    with open(META_PATH,"r",encoding="utf-8") as f:
-        meta = json.load(f)
-    embedder = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2", device="cpu")
-    return index, meta, embedder
+def load_llm(base_id: str = BASE, adapter_dir: str = ADAPTER_DIR):
+    """Load 4-bit base model and QLoRA adapter."""
+    return load_qwen_model(base_id=base_id, adapter_dir=adapter_dir, load_adapter=True)
 
-def retrieve(embedder, index, meta, query, k=3):
-    q = embedder.encode([query], normalize_embeddings=True, convert_to_numpy=True)
-    D, I = index.search(q.astype("float32"), k)
-    hits = []
-    for rank, idx in enumerate(I[0]):
-        title = meta["titles"][idx]; text = meta["texts"][idx]
-        hits.append({"rank":rank+1,"title":title,"text":text})
-    return hits
 
-def answer(tok, model, question, contexts):
-    ctx_block = "\n\n".join([f"[{c['rank']}] {c['title']}: {c['text']}" for c in contexts])
-    system = (
-        "You answer using the CONTEXT below. "
-        "If the answer is not in the context, say 'I don't know' briefly. "
-        "Be factual and concise."
-    )
-    user = f"CONTEXT:\n{ctx_block}\n\nQUESTION: {question}"
-    messages = [{"role":"system","content":system},{"role":"user","content":user}]
-    inputs = tok.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt")
-    attn = torch.ones_like(inputs)
-    inputs, attn = inputs.to(model.device), attn.to(model.device)
-    with torch.inference_mode():
-        out = model.generate(
-            inputs, attention_mask=attn, max_new_tokens=160, temperature=0.2, top_p=0.9,
-            repetition_penalty=1.05, pad_token_id=tok.eos_token_id
+def answer(tok, model, question: str, contexts, strict_kb: bool = False) -> str:
+    """Generate a grounded answer from retrieved context passages."""
+    if contexts:
+        ctx_block = context_block(contexts)
+        system = (
+            "You answer using the CONTEXT below. "
+            "If the answer is not in the context, say 'I don't know' briefly. "
+            "Be factual and concise."
         )
-    text = tok.decode(out[0][inputs.shape[-1]:], skip_special_tokens=True).strip()
-    return text
+        user = f"CONTEXT:\n{ctx_block}\n\nQUESTION: {question}"
+    elif strict_kb:
+        system = "Briefly state that the answer is not verified in the local knowledge base."
+        user = question
+    else:
+        system = "You are a concise, factual assistant."
+        user = question
 
-def main():
-    tok, model = load_llm()
-    index, meta, embedder = load_kb()
+    return generate_response(
+        tok,
+        model,
+        system=system,
+        user=user,
+        max_new_tokens=160,
+        temperature=0.2,
+    )
 
-    q = "What is the capital of Australia and when was it founded?"
-    ctx = retrieve(embedder, index, meta, q, k=3)
-    print("\n--- RETRIEVED CONTEXT ---")
-    for c in ctx: print(f"[{c['rank']}] {c['title']}")
-    t0=time.time()
-    ans = answer(tok, model, q, ctx)
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Run Confidence-Gated RAG inference")
+    ap.add_argument("--base", default=BASE)
+    ap.add_argument("--adapter", default=ADAPTER_DIR)
+    ap.add_argument("--kb_dir", default=KB_DIR)
+    ap.add_argument(
+        "--query",
+        default="What is the capital of Australia and when was it founded?",
+    )
+    ap.add_argument("--top_k", type=int, default=3)
+    ap.add_argument("--score_threshold", type=float, default=0.30)
+    ap.add_argument("--strict_kb", action="store_true")
+    args = ap.parse_args(argv)
+
+    tok, model = load_llm(args.base, args.adapter)
+    init_kb(args.kb_dir)
+
+    rag_plan = build_rag_prompt(
+        system_prompt="You are a concise, factual assistant.",
+        user_query=args.query,
+        use_rag=True,
+        top_k=args.top_k,
+        score_threshold=args.score_threshold,
+        strict_kb=args.strict_kb,
+        kb_dir=args.kb_dir,
+    )
+    ctx = retrieve_kb(
+        args.query,
+        top_k=args.top_k,
+        score_threshold=args.score_threshold,
+        kb_dir=args.kb_dir,
+    )
+
+    print(f"\n--- RETRIEVED CONTEXT (mode={rag_plan['mode']}, tau={args.score_threshold:.2f}) ---")
+    if ctx:
+        for c in ctx:
+            print(f"[{c['rank']}] {c['title']} (id={c.get('id', 'kb')}, score={c.get('score', 0.0):.4f})")
+    else:
+        print("(no passages exceeded score threshold)")
+
+    t0 = time.time()
+    ans = answer(tok, model, args.query, ctx, strict_kb=args.strict_kb)
     print("\n--- ANSWER ---\n", ans)
-    print(f"\nLatency: {time.time()-t0:.2f}s")
+    print(f"\nLatency: {time.time() - t0:.2f}s")
+
 
 if __name__ == "__main__":
     main()

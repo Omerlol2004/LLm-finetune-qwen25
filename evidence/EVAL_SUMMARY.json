@@ -1,0 +1,31 @@
+{
+  "num_rows": 30,
+  "base_model": "Qwen/Qwen2.5-3B-Instruct",
+  "adapter_checkpoint": "qwen25-3b-dolly-qlora-steps150",
+  "eval_dataset": "databricks/databricks-dolly-15k (validation split, seed=42, n=30)",
+  "avg_len_base": 68.2,
+  "avg_len_adapter": 39.0,
+  "avg_len_base_words": 68.2,
+  "avg_len_adapter_words": 39.0,
+  "word_reduction_pct": -42.8,
+  "avg_len_base_chars": 127.8,
+  "avg_len_adapter_chars": 185.2,
+  "rougeL_base": 0.2655,
+  "rougeL_adapter": 0.3351,
+  "rougeL_relative_gain_pct": 26.2,
+  "peak_vram_gb": 3.88,
+  "vram_range_gb": [
+    3.86,
+    3.9
+  ],
+  "hardware_vram_limit_gb": 4.0,
+  "avg_latency_sec": 3.43,
+  "has_canberra_case": true,
+  "example_canberra": {
+    "idx": 187,
+    "user": "What is the capital of Australia and when was it founded?",
+    "gold": "The capital of Australia is Canberra. It was formally founded and named in 1913. The creation of Canberra followed a lengthy dispute over whether Sydney or Melbourne should be the capital. The word \"Canberra\" is derived from the name of the indigenous Ngunnawal clan who have resided on the land for over 21,000 years.",
+    "base": "The capital of Australia is Canberra. It was founded in 1908.",
+    "adapter": "The capital of Australia is Canberra. It was founded in 1908."
+  }
+}

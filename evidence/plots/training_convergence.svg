@@ -1,0 +1,295 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 560" width="100%" height="100%" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0f19"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="lossArea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#f97316" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="accArea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="gradArea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Main Card Background -->
+  <rect width="1100" height="560" rx="14" fill="url(#bgGrad)" stroke="#1f2937" stroke-width="2"/>
+
+  <!-- Header -->
+  <text x="36" y="42" fill="#f9fafb" font-size="20" font-weight="700" letter-spacing="0.3">Qwen2.5-3B-Instruct 4-Bit NF4 QLoRA — 150-Step Training Convergence Telemetry</text>
+  <text x="36" y="66" fill="#9ca3af" font-size="13">Source: checkpoint-150/trainer_state.json &amp; TensorBoard tfevents (r=8, α=16, paged_adamw_8bit, batch=1×32, max_seq_len=448)</text>
+
+  <!-- Summary KPI Pills -->
+  <g transform="translate(36, 82)">
+    <rect x="0" y="0" width="235" height="44" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="14" y="18" fill="#94a3b8" font-size="11" font-weight="600">CROSS-ENTROPY LOSS DROP</text>
+    <text x="14" y="36" fill="#f97316" font-size="15" font-weight="700">2.1785 → 1.6605 (-23.8%)</text>
+
+    <rect x="250" y="0" width="245" height="44" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="264" y="18" fill="#94a3b8" font-size="11" font-weight="600">MEAN TOKEN ACCURACY</text>
+    <text x="264" y="36" fill="#10b981" font-size="15" font-weight="700">57.04% → 66.80% (+9.76 pts)</text>
+
+    <rect x="510" y="0" width="245" height="44" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="524" y="18" fill="#94a3b8" font-size="11" font-weight="600">L2 GRADIENT NORM STABILIZATION</text>
+    <text x="524" y="36" fill="#38bdf8" font-size="15" font-weight="700">0.473 → 0.201 (-57.5%)</text>
+
+    <rect x="770" y="0" width="258" height="44" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="784" y="18" fill="#94a3b8" font-size="11" font-weight="600">TOTAL TOKENS &amp; WALL RUNTIME</text>
+    <text x="784" y="36" fill="#e2e8f0" font-size="15" font-weight="700">928,417 tok | 71.8 min (3.88 GB)</text>
+  </g>
+
+  <!-- ======================================================================= -->
+  <!-- PANEL 1 (LEFT): Cross-Entropy Loss & Mean Token Accuracy (Steps 20-150) -->
+  <!-- Plot area: x in [75, 525] (width 450), y in [175, 465] (height 290)     -->
+  <!-- ======================================================================= -->
+  <rect x="36" y="142" width="535" height="378" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="54" y="166" fill="#f8fafc" font-size="14" font-weight="700">Panel A: Training Loss &amp; Token Accuracy Trajectory</text>
+
+  <!-- Horizontal Grid Lines (Panel A) -->
+  <!-- Loss scale [1.50, 2.30]: y = 465 - (loss - 1.50)/0.80 * 290 -->
+  <!-- Acc scale  [55%, 70%]:   y = 465 - (acc - 55.0)/15.0 * 290 -->
+  <g stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4">
+    <line x1="75" y1="175" x2="515" y2="175"/>
+    <line x1="75" y1="233" x2="515" y2="233"/>
+    <line x1="75" y1="291" x2="515" y2="291"/>
+    <line x1="75" y1="349" x2="515" y2="349"/>
+    <line x1="75" y1="407" x2="515" y2="407"/>
+    <line x1="75" y1="465" x2="515" y2="465"/>
+  </g>
+
+  <!-- Left Y-Axis Labels (Cross-Entropy Loss: 1.50 to 2.25) -->
+  <g fill="#fb923c" font-size="11" text-anchor="end" font-weight="600">
+    <text x="69" y="179">2.25</text>
+    <text x="69" y="237">2.10</text>
+    <text x="69" y="295">1.95</text>
+    <text x="69" y="353">1.80</text>
+    <text x="69" y="411">1.65</text>
+    <text x="69" y="469">1.50</text>
+  </g>
+
+  <!-- Right Y-Axis Labels (Token Accuracy %: 55% to 70%) -->
+  <g fill="#34d399" font-size="11" text-anchor="start" font-weight="600">
+    <text x="521" y="179">70.0%</text>
+    <text x="521" y="237">67.0%</text>
+    <text x="521" y="295">64.0%</text>
+    <text x="521" y="353">61.0%</text>
+    <text x="521" y="411">58.0%</text>
+    <text x="521" y="469">55.0%</text>
+  </g>
+
+  <!-- X-Axis Step Labels (Steps 20, 40, 60, 80, 100, 120, 140, 150) -->
+  <!-- x = 85 + (step - 20)/130 * 420 -->
+  <!-- s20=85, s40=149.6, s60=214.2, s80=278.8, s100=343.5, s120=408.1, s140=472.7, s150=505 -->
+  <g fill="#94a3b8" font-size="11" text-anchor="middle">
+    <text x="85" y="485">20</text>
+    <text x="150" y="485">40</text>
+    <text x="214" y="485">60</text>
+    <text x="279" y="485">80</text>
+    <text x="343" y="485">100</text>
+    <text x="408" y="485">120</text>
+    <text x="473" y="485">140</text>
+    <text x="505" y="485">150</text>
+    <text x="295" y="506" fill="#cbd5e1" font-size="12" font-weight="600">Training Step (Effective Batch = 32 Sequences / Step)</text>
+  </g>
+
+  <!-- Accuracy Shaded Area & Polyline -->
+  <!-- Acc points:
+       s20:  57.04% -> y = 465 - (2.04/15)*290 = 425.6
+       s40:  65.50% -> y = 465 - (10.50/15)*290 = 262.0
+       s60:  65.99% -> y = 465 - (10.99/15)*290 = 252.5
+       s80:  66.22% -> y = 465 - (11.22/15)*290 = 248.1
+       s100: 66.38% -> y = 465 - (11.38/15)*290 = 245.0
+       s120: 65.79% -> y = 465 - (10.79/15)*290 = 256.4
+       s140: 66.80% -> y = 465 - (11.80/15)*290 = 236.9
+       s150: 66.75% -> y = 465 - (11.75/15)*290 = 237.8
+  -->
+  <polygon points="85,465 85,425.6 150,262.0 214,252.5 279,248.1 343,245.0 408,256.4 473,236.9 505,237.8 505,465" fill="url(#accArea)"/>
+  <polyline points="85,425.6 150,262.0 214,252.5 279,248.1 343,245.0 408,256.4 473,236.9 505,237.8" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Loss Shaded Area & Polyline -->
+  <!-- Loss scale [1.50, 2.25] (span 0.75 -> 290 px):
+       s20:  2.1785 -> y = 465 - (0.6785/0.75)*290 = 202.6
+       s40:  1.6920 -> y = 465 - (0.1920/0.75)*290 = 390.8
+       s60:  1.6346 -> y = 465 - (0.1346/0.75)*290 = 413.0
+       s80:  1.6502 -> y = 465 - (0.1502/0.75)*290 = 406.9
+       s100: 1.6461 -> y = 465 - (0.1461/0.75)*290 = 408.5
+       s120: 1.6791 -> y = 465 - (0.1791/0.75)*290 = 395.7
+       s140: 1.6605 -> y = 465 - (0.1605/0.75)*290 = 402.9
+       s150: 1.6605 -> y = 465 - (0.1605/0.75)*290 = 402.9
+  -->
+  <polygon points="85,465 85,202.6 150,390.8 214,413.0 279,406.9 343,408.5 408,395.7 473,402.9 505,402.9 505,465" fill="url(#lossArea)"/>
+  <polyline points="85,202.6 150,390.8 214,413.0 279,406.9 343,408.5 408,395.7 473,402.9 505,402.9" fill="none" stroke="#f97316" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Data Nodes & Value Callouts (Panel A) -->
+  <g fill="#10b981" stroke="#0f172a" stroke-width="1.5">
+    <circle cx="85" cy="425.6" r="4.5"/>
+    <circle cx="150" cy="262.0" r="4.5"/>
+    <circle cx="214" cy="252.5" r="4.5"/>
+    <circle cx="279" cy="248.1" r="4.5"/>
+    <circle cx="343" cy="245.0" r="4.5"/>
+    <circle cx="408" cy="256.4" r="4.5"/>
+    <circle cx="473" cy="236.9" r="5"/>
+    <circle cx="505" cy="237.8" r="4.5"/>
+  </g>
+  <g fill="#34d399" font-size="10.5" font-weight="700">
+    <text x="93" y="438">57.04%</text>
+    <text x="135" y="250">65.50%</text>
+    <text x="200" y="241">65.99%</text>
+    <text x="266" y="236">66.22%</text>
+    <text x="330" y="233">66.38%</text>
+    <text x="394" y="246">65.79%</text>
+    <text x="448" y="224">66.80%</text>
+  </g>
+
+  <g fill="#f97316" stroke="#0f172a" stroke-width="1.5">
+    <circle cx="85" cy="202.6" r="5"/>
+    <circle cx="150" cy="390.8" r="4.5"/>
+    <circle cx="214" cy="413.0" r="5"/>
+    <circle cx="279" cy="406.9" r="4.5"/>
+    <circle cx="343" cy="408.5" r="4.5"/>
+    <circle cx="408" cy="395.7" r="4.5"/>
+    <circle cx="473" cy="402.9" r="5"/>
+    <circle cx="505" cy="402.9" r="4.5"/>
+  </g>
+  <g fill="#fdba74" font-size="10.5" font-weight="700">
+    <text x="94" y="205">2.1785</text>
+    <text x="135" y="381">1.6920</text>
+    <text x="196" y="430">1.6346 (min)</text>
+    <text x="268" y="397">1.6502</text>
+    <text x="331" y="425">1.6461</text>
+    <text x="393" y="385">1.6791</text>
+    <text x="455" y="421">1.6605</text>
+  </g>
+
+  <!-- Panel A Legend -->
+  <g transform="translate(195, 154)">
+    <line x1="120" y1="7" x2="142" y2="7" stroke="#f97316" stroke-width="3"/>
+    <circle cx="131" cy="7" r="3.5" fill="#f97316"/>
+    <text x="148" y="11" fill="#fdba74" font-size="11" font-weight="600">Cross-Entropy Loss</text>
+
+    <line x1="265" y1="7" x2="287" y2="7" stroke="#10b981" stroke-width="3"/>
+    <circle cx="276" cy="7" r="3.5" fill="#10b981"/>
+    <text x="293" y="11" fill="#34d399" font-size="11" font-weight="600">Token Accuracy</text>
+  </g>
+
+  <!-- ======================================================================= -->
+  <!-- PANEL 2 (RIGHT): L2 Grad Norm & Cosine Learning Rate Decay              -->
+  <!-- Plot area: x in [625, 1020] (width 395), y in [175, 465] (height 290)   -->
+  <!-- ======================================================================= -->
+  <rect x="585" y="142" width="479" height="378" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="603" y="166" fill="#f8fafc" font-size="14" font-weight="700">Panel B: L2 Gradient Norm &amp; Cosine Learning Rate</text>
+
+  <!-- Horizontal Grid Lines (Panel B) -->
+  <!-- Grad Norm scale [0.0, 0.50]: y = 465 - (gn / 0.50) * 290 -->
+  <!-- LR scale [0.0, 2.0e-4]:      y = 465 - (lr / 0.0002) * 290 -->
+  <g stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4">
+    <line x1="625" y1="175" x2="1015" y2="175"/>
+    <line x1="625" y1="233" x2="1015" y2="233"/>
+    <line x1="625" y1="291" x2="1015" y2="291"/>
+    <line x1="625" y1="349" x2="1015" y2="349"/>
+    <line x1="625" y1="407" x2="1015" y2="407"/>
+    <line x1="625" y1="465" x2="1015" y2="465"/>
+  </g>
+
+  <!-- Left Y-Axis Labels (Grad Norm: 0.00 to 0.50) -->
+  <g fill="#38bdf8" font-size="11" text-anchor="end" font-weight="600">
+    <text x="619" y="179">0.50</text>
+    <text x="619" y="237">0.40</text>
+    <text x="619" y="295">0.30</text>
+    <text x="619" y="353">0.20</text>
+    <text x="619" y="411">0.10</text>
+    <text x="619" y="469">0.00</text>
+  </g>
+
+  <!-- Right Y-Axis Labels (Learning Rate: 0.0 to 2.0e-4) -->
+  <g fill="#c084fc" font-size="11" text-anchor="start" font-weight="600">
+    <text x="1021" y="179">2.0e-4</text>
+    <text x="1021" y="237">1.6e-4</text>
+    <text x="1021" y="295">1.2e-4</text>
+    <text x="1021" y="353">8.0e-5</text>
+    <text x="1021" y="411">4.0e-5</text>
+    <text x="1021" y="469">0.0</text>
+  </g>
+
+  <!-- X-Axis Step Labels (Panel B) -->
+  <!-- x = 635 + (step - 20)/130 * 370 -->
+  <!-- s20=635, s40=691.9, s60=748.8, s80=805.8, s100=862.7, s120=919.6, s140=976.5, s150=1005 -->
+  <g fill="#94a3b8" font-size="11" text-anchor="middle">
+    <text x="635" y="485">20</text>
+    <text x="692" y="485">40</text>
+    <text x="749" y="485">60</text>
+    <text x="806" y="485">80</text>
+    <text x="863" y="485">100</text>
+    <text x="920" y="485">120</text>
+    <text x="977" y="485">140</text>
+    <text x="1005" y="485">150</text>
+    <text x="820" y="506" fill="#cbd5e1" font-size="12" font-weight="600">Training Step (max_grad_norm = 0.30, warmup_ratio = 0.03)</text>
+  </g>
+
+  <!-- Cosine LR Curve -->
+  <!-- LR points:
+       s20:  1.954e-4 -> y = 465 - (1.954/2.0)*290 = 181.6
+       s40:  1.741e-4 -> y = 465 - (1.741/2.0)*290 = 212.6
+       s60:  1.390e-4 -> y = 465 - (1.390/2.0)*290 = 263.4
+       s80:  9.675e-5 -> y = 465 - (0.9675/2.0)*290 = 324.7
+       s100: 5.508e-5 -> y = 465 - (0.5508/2.0)*290 = 385.1
+       s120: 2.172e-5 -> y = 465 - (0.2172/2.0)*290 = 433.5
+       s140: 2.83e-6  -> y = 465 - (0.0283/2.0)*290 = 460.9
+       s150: 0.0      -> y = 465.0
+  -->
+  <polyline points="635,181.6 692,212.6 749,263.4 806,324.7 863,385.1 920,433.5 977,460.9 1005,465.0" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-dasharray="6,4"/>
+
+  <!-- Grad Norm Shaded Area & Polyline -->
+  <!-- Grad Norm points:
+       s20:  0.4727 -> y = 465 - (0.4727/0.50)*290 = 190.8
+       s40:  0.2981 -> y = 465 - (0.2981/0.50)*290 = 292.1
+       s60:  0.2261 -> y = 465 - (0.2261/0.50)*290 = 333.9
+       s80:  0.1814 -> y = 465 - (0.1814/0.50)*290 = 359.8
+       s100: 0.2006 -> y = 465 - (0.2006/0.50)*290 = 348.7
+       s120: 0.1985 -> y = 465 - (0.1985/0.50)*290 = 349.9
+       s140: 0.2014 -> y = 465 - (0.2014/0.50)*290 = 348.2
+       s150: 0.2014 -> y = 465 - (0.2014/0.50)*290 = 348.2
+  -->
+  <polygon points="635,465 635,190.8 692,292.1 749,333.9 806,359.8 863,348.7 920,349.9 977,348.2 1005,348.2 1005,465" fill="url(#gradArea)"/>
+  <polyline points="635,190.8 692,292.1 749,333.9 806,359.8 863,348.7 920,349.9 977,348.2 1005,348.2" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Grad Norm Nodes & Callouts -->
+  <g fill="#38bdf8" stroke="#0f172a" stroke-width="1.5">
+    <circle cx="635" cy="190.8" r="5"/>
+    <circle cx="692" cy="292.1" r="4.5"/>
+    <circle cx="749" cy="333.9" r="4.5"/>
+    <circle cx="806" cy="359.8" r="4.5"/>
+    <circle cx="863" cy="348.7" r="4.5"/>
+    <circle cx="920" cy="349.9" r="4.5"/>
+    <circle cx="977" cy="348.2" r="5"/>
+  </g>
+  <g fill="#7dd3fc" font-size="10.5" font-weight="700">
+    <text x="644" y="196">0.473</text>
+    <text x="698" y="287">0.298</text>
+    <text x="754" y="328">0.226</text>
+    <text x="795" y="376">0.181</text>
+    <text x="852" y="339">0.201</text>
+    <text x="908" y="340">0.198</text>
+    <text x="962" y="338">0.201</text>
+  </g>
+
+  <!-- Panel B Legend -->
+  <g transform="translate(740, 182)">
+    <rect x="0" y="0" width="260" height="48" rx="6" fill="#1e293b" fill-opacity="0.85" stroke="#334155" stroke-width="1"/>
+    <line x1="12" y1="16" x2="36" y2="16" stroke="#38bdf8" stroke-width="3"/>
+    <circle cx="24" cy="16" r="3.5" fill="#38bdf8"/>
+    <text x="44" y="20" fill="#7dd3fc" font-size="11" font-weight="600">L2 Grad Norm (0.473 → 0.201)</text>
+
+    <line x1="12" y1="34" x2="36" y2="34" stroke="#c084fc" stroke-width="2.5" stroke-dasharray="5,3"/>
+    <text x="44" y="38" fill="#d8b4fe" font-size="11" font-weight="600">Cosine LR (1.95e-4 → 0.0)</text>
+  </g>
+
+  <!-- Bottom Footer -->
+  <text x="36" y="542" fill="#64748b" font-size="11">Empirical Audit: Rapid stylistic &amp; structural alignment occurs between Steps 20–60 (Loss 2.1785 → 1.6346; Token Acc 57.04% → 65.99%), stabilizing smoothly through Step 150.</text>
+</svg>

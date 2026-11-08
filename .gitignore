@@ -7,3 +7,5 @@ data/processed/
 *.pt
 *.bin
 *.safetensors
+*.pdf
+docs/

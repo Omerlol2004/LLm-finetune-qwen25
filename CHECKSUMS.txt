@@ -1,0 +1,36 @@
+# ==============================================================================
+# ARTIFACT & EVIDENCE INTEGRITY MANIFEST (SHA-256 / MD5 CHECKSUMS)
+# Repository: Omerlol2004/LLm-finetune-qwen25
+# Base Model: Qwen/Qwen2.5-3B-Instruct (4-bit NF4 QLoRA r=8, alpha=16, 150 steps)
+# Verification: sha256sum <file> | md5sum <file>
+# ==============================================================================
+
+## 1. Primary Repository Artifacts & Knowledge Base
+# FORMAT: <SHA-256>  <MD5>  <BYTES>  <PATH>
+f1d4c32f8ad10165edc998cc5aae03447e1d0b63fd452cb38803b54ba11efc3a  b189d4b497b29c6253e255d442cd4f43    40650822  release_qwen25_qlora.zip
+3c49d29ef166cf7063691c52bce4c103426db7649e3caeb481ff999798a752e8  0026e0ba138f0cce0b394e92c8335dca         734  kb/facts.jsonl
+471564c59c4653afbca0a262abf8bb3f09278fded73aea34af9c7f41ce3976ce  23406efdd5838c0983c96b21e1327d91        4653  kb/index.faiss
+75b6afc86d75c3f75498875e9e8de049a5971a6262ed4e550e8c1aad38d3173a  d9b38eccd63d437ce53ac4ac40ccbd73         766  kb/meta.json
+
+## 2. Extracted Empirical Evidence & Evaluation Telemetry (evidence/)
+# FORMAT: <SHA-256>  <MD5>  <BYTES>  <PATH>
+fd33fc34c57de0de69671ac107b472be7b01db5cac4393f9750f151762b33f4d  45d272d1ff052e4a4371f7cae06ae8e5        1276  evidence/EVAL_SUMMARY.json
+b9deb191849b23905e95cf48abd617c3e15fdf771e6fad144bce3f8579756b01  dc375bb1a82e900596830ba325f89e81        2558  evidence/trainer_state_steps150.json
+dd8490ec69ea07eaf0f3247c23b635a2fd005e071ea66bf342d5d014c720658a  7970095d9163be0e7363fca591a9805b         887  evidence/adapter_config.json
+525fafb382fcd9ae71c3d3512cf8dcccaa9cc919d26d7ff0547c200666db01a0  b6426f2f54a47214103b78c78f33131c        6041  evidence/ablation_4way_report.json
+9709a178ce2aa0b0d80448ea19214ad156cbfbaf8cae070496c48d413c6f785f  9d75c10310a85aae0ef65fcf51426c78        3965  evidence/canberra_case_study.json
+
+## 3. Publication SVG Telemetry Visualizations (evidence/plots/)
+# FORMAT: <SHA-256>  <MD5>  <BYTES>  <PATH>
+cbc59515e53506111bfa539d67a4976ed0222618493da58c394272fecf21131a  7131cbf25328c7064789263dddfa427c       15055  evidence/plots/training_convergence.svg
+482e18f7be5ae5ca3c11d74273b2098b8e40236dda005b45f0a1adb95521c6e9  d94a69ffbe8f806c423cbbfe4f180427        9720  evidence/plots/ablation_4way_comparison.svg
+824c00dbfb0df9ae3327e82c9ce0c11fa432129bed598c37b2fe4b2852ffcb7a  8bc82c06b6a18c108b5a5af21baacff0       11110  evidence/plots/vram_budget_4gb.svg
+
+## 4. Internal Checkpoint Artifacts Inside release_qwen25_qlora.zip
+# FORMAT: <SHA-256>  <MD5>  <BYTES>  <ZIP_ENTRY>
+80bbb85f33e4b01e55d50de9dadd5de2432bced79b21986041c5bc06029bb919  920bbe4b9c80eed49e4849fc13715de2    14783648  zip://qwen25-3b-dolly-qlora-steps150\adapter_model.safetensors
+8e7e71eff1dfa0454f05ca6fc558a30c9709868261b702e46549e1b503e4c0cc  86744d3a942f3b527ff909e718595323         924  zip://qwen25-3b-dolly-qlora-steps150\adapter_config.json
+271083ccb70336cdb476b079ecf4278146787efd774ff8304b0da65c11137053  b7d333960c8c1b757cd4d7d72f347913        2655  zip://qwen25-3b-dolly-qlora-steps150\checkpoint-150\trainer_state.json
+80b35a575b7fe980548f78864b7e6072d6de4edb33dbe169ad4827786e0c81ff  3a5a5752b6ebbabb5a5543e24a739b07     8663620  zip://qwen25-3b-dolly-qlora-steps150\checkpoint-150\optimizer.pt
+d482b9399c6dcd180b1dad45b436beac349be26896b5172aced3fcee0976a918  5eff17ab704ea6ed0b3589d72616cb74        9556  zip://qwen25-3b-dolly-qlora-steps150\runs\Aug26_21-41-35_LAPTOP-IDHKTI4O\events.out.tfevents.1756233697.LAPTOP-IDHKTI4O.37660.0
+f118013833bb4d953444c85daccf159724e4e5fd286bd3d4b6fce615645f7c01  6e7030c27f436382106b5e964cd7c603         720  zip://EVAL_SUMMARY.json
