@@ -144,7 +144,7 @@
     <text x="266" y="236">66.22%</text>
     <text x="330" y="233">66.38%</text>
     <text x="394" y="246">65.79%</text>
-    <text x="448" y="224">66.80%</text>
+    <text x="455" y="254">66.80%</text>
   </g>
 
   <g fill="#f97316" stroke="#0f172a" stroke-width="1.5">
@@ -167,15 +167,16 @@
     <text x="455" y="421">1.6605</text>
   </g>
 
-  <!-- Panel A Legend -->
-  <g transform="translate(195, 154)">
-    <line x1="120" y1="7" x2="142" y2="7" stroke="#f97316" stroke-width="3"/>
-    <circle cx="131" cy="7" r="3.5" fill="#f97316"/>
-    <text x="148" y="11" fill="#fdba74" font-size="11" font-weight="600">Cross-Entropy Loss</text>
+  <!-- Panel A Legend Box -->
+  <g transform="translate(230, 180)">
+    <rect x="0" y="0" width="235" height="44" rx="6" fill="#1e293b" fill-opacity="0.88" stroke="#334155" stroke-width="1"/>
+    <line x1="12" y1="15" x2="34" y2="15" stroke="#f97316" stroke-width="3"/>
+    <circle cx="23" cy="15" r="3.5" fill="#f97316"/>
+    <text x="42" y="19" fill="#fdba74" font-size="11" font-weight="600">Cross-Entropy Loss (2.18 → 1.66)</text>
 
-    <line x1="265" y1="7" x2="287" y2="7" stroke="#10b981" stroke-width="3"/>
-    <circle cx="276" cy="7" r="3.5" fill="#10b981"/>
-    <text x="293" y="11" fill="#34d399" font-size="11" font-weight="600">Token Accuracy</text>
+    <line x1="12" y1="31" x2="34" y2="31" stroke="#10b981" stroke-width="3"/>
+    <circle cx="23" cy="31" r="3.5" fill="#10b981"/>
+    <text x="42" y="35" fill="#34d399" font-size="11" font-weight="600">Token Accuracy (57.0% → 66.8%)</text>
   </g>
 
   <!-- ======================================================================= -->
@@ -270,7 +271,7 @@
     <circle cx="977" cy="348.2" r="5"/>
   </g>
   <g fill="#7dd3fc" font-size="10.5" font-weight="700">
-    <text x="644" y="196">0.473</text>
+    <text x="644" y="210">0.473</text>
     <text x="698" y="287">0.298</text>
     <text x="754" y="328">0.226</text>
     <text x="795" y="376">0.181</text>

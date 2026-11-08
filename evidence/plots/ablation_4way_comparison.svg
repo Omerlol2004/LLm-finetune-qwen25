@@ -99,53 +99,53 @@
   <rect x="54" y="382" width="992" height="28" rx="5" fill="#1e293b"/>
   <g fill="#94a3b8" font-size="11" font-weight="700">
     <text x="66" y="400">SYSTEM CONFIGURATION</text>
-    <text x="315" y="400">STYLE / CONCISENESS</text>
-    <text x="495" y="400">CANBERRA OUTPUT</text>
-    <text x="670" y="400">INTENT ROUTER BUG</text>
-    <text x="845" y="400">ARCHITECTURAL VERDICT</text>
+    <text x="299" y="400">STYLE / CONCISENESS</text>
+    <text x="479" y="400">CANBERRA OUTPUT</text>
+    <text x="649" y="400">INTENT ROUTER BUG</text>
+    <text x="849" y="400">ARCHITECTURAL VERDICT</text>
   </g>
 
   <!-- Row 1: Base Zero-Shot -->
   <g transform="translate(54, 416)" font-size="11.5">
     <text x="12" y="18" fill="#cbd5e1" font-weight="600">1. Base Model (Zero-Shot)</text>
-    <text x="261" y="18" fill="#94a3b8">68.2w (ROUGE-L 0.2655)</text>
-    <rect x="440" y="3" width="132" height="21" rx="4" fill="#450a0a" stroke="#dc2626" stroke-width="1"/>
-    <text x="450" y="18" fill="#fca5a5" font-weight="700">1908 ❌ (Hallucinated)</text>
-    <text x="616" y="18" fill="#64748b">N/A (No RAG)</text>
-    <text x="791" y="18" fill="#f87171">Verbose &amp; factually ungrounded</text>
+    <text x="245" y="18" fill="#94a3b8">68.2w (ROUGE-L 0.2655)</text>
+    <rect x="425" y="3" width="145" height="21" rx="4" fill="#450a0a" stroke="#dc2626" stroke-width="1"/>
+    <text x="435" y="18" fill="#fca5a5" font-weight="700">1908 ❌ (Hallucinated)</text>
+    <text x="595" y="18" fill="#64748b">N/A (No RAG Pipeline)</text>
+    <text x="795" y="18" fill="#f87171">Verbose &amp; ungrounded</text>
   </g>
   <line x1="54" y1="444" x2="1046" y2="444" stroke="#1e293b" stroke-width="1"/>
 
   <!-- Row 2: Base + Naive RAG -->
   <g transform="translate(54, 448)" font-size="11.5">
-    <text x="12" y="18" fill="#cbd5e1" font-weight="600">2. Base + Naive Unfiltered RAG</text>
-    <text x="261" y="18" fill="#38bdf8">71.4w (ROUGE-L 0.2790)</text>
-    <rect x="440" y="3" width="132" height="21" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1"/>
-    <text x="450" y="18" fill="#6ee7b7" font-weight="700">1913 ✅ (Grounded)</text>
-    <text x="616" y="18" fill="#fbbf24">28.6% False Skip ("hi" in "which")</text>
-    <text x="791" y="18" fill="#38bdf8">Noisy top-k injection; verbose</text>
+    <text x="12" y="18" fill="#cbd5e1" font-weight="600">2. Base + Naive RAG (Top-k)</text>
+    <text x="245" y="18" fill="#38bdf8">71.4w (ROUGE-L 0.2790)</text>
+    <rect x="425" y="3" width="145" height="21" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1"/>
+    <text x="435" y="18" fill="#6ee7b7" font-weight="700">1913 ✅ (Grounded)</text>
+    <text x="595" y="18" fill="#fbbf24">28.6% False Skip (Substring)</text>
+    <text x="795" y="18" fill="#38bdf8">Noisy top-k injection; verbose</text>
   </g>
   <line x1="54" y1="476" x2="1046" y2="476" stroke="#1e293b" stroke-width="1"/>
 
   <!-- Row 3: QLoRA Adapter No-RAG (+ Stage 2 Patch note) -->
   <g transform="translate(54, 480)" font-size="11.5">
-    <text x="12" y="18" fill="#cbd5e1" font-weight="600">3. QLoRA Adapter (No-RAG / Patch)</text>
-    <text x="261" y="18" fill="#fbbf24" font-weight="600">39.0w (-42.8% | 0.3351)</text>
-    <rect x="440" y="3" width="132" height="21" rx="4" fill="#450a0a" stroke="#dc2626" stroke-width="1"/>
-    <text x="450" y="18" fill="#fca5a5" font-weight="700">1908 ❌ (Prior Retained)</text>
-    <text x="616" y="18" fill="#94a3b8">Patch replay 1/1016 (0.098%)</text>
-    <text x="791" y="18" fill="#fbbf24">Concise style, tail-fact gap remains</text>
+    <text x="12" y="18" fill="#cbd5e1" font-weight="600">3. QLoRA Adapter (No RAG)</text>
+    <text x="245" y="18" fill="#fbbf24" font-weight="600">39.0w (-42.8% | 0.3351)</text>
+    <rect x="425" y="3" width="145" height="21" rx="4" fill="#450a0a" stroke="#dc2626" stroke-width="1"/>
+    <text x="435" y="18" fill="#fca5a5" font-weight="700">1908 ❌ (Prior Retained)</text>
+    <text x="595" y="18" fill="#94a3b8">Patch Replay (0.098% Mix)</text>
+    <text x="795" y="18" fill="#fbbf24">Concise style, tail-fact gap</text>
   </g>
   <line x1="54" y1="508" x2="1046" y2="508" stroke="#1e293b" stroke-width="1"/>
 
   <!-- Row 4: QLoRA + Confidence-Gated RAG -->
   <g transform="translate(54, 512)" font-size="11.5">
     <rect x="0" y="0" width="992" height="26" rx="5" fill="#064e3b" fill-opacity="0.35" stroke="#10b981" stroke-width="1"/>
-    <text x="12" y="18" fill="#f8fafc" font-weight="700">4. QLoRA + Confidence-Gated RAG (τ=0.30)</text>
-    <text x="261" y="18" fill="#34d399" font-weight="700">39.0w (-42.8% | +26.2%)</text>
-    <rect x="440" y="3" width="132" height="20" rx="4" fill="#059669"/>
-    <text x="450" y="17" fill="#ffffff" font-weight="700">1913 ✅ (Score 0.78 [1])</text>
-    <text x="616" y="18" fill="#34d399" font-weight="700">0.0% False Skip (Regex \b)</text>
-    <text x="791" y="18" fill="#6ee7b7" font-weight="700">Optimal Style + Verified Facts</text>
+    <text x="12" y="18" fill="#f8fafc" font-weight="700">4. QLoRA + Gated RAG (τ=0.35)</text>
+    <text x="245" y="18" fill="#34d399" font-weight="700">39.0w (-42.8% | +26.2%)</text>
+    <rect x="425" y="3" width="145" height="20" rx="4" fill="#059669"/>
+    <text x="435" y="17" fill="#ffffff" font-weight="700">1913 ✅ (Score 0.78)</text>
+    <text x="595" y="18" fill="#34d399" font-weight="700">0.0% False Skip (Regex \b)</text>
+    <text x="795" y="18" fill="#6ee7b7" font-weight="700">Optimal Style + Verified Facts</text>
   </g>
 </svg>

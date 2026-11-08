@@ -22,9 +22,9 @@ dd8490ec69ea07eaf0f3247c23b635a2fd005e071ea66bf342d5d014c720658a  7970095d9163be
 
 ## 3. Publication SVG Telemetry Visualizations (evidence/plots/)
 # FORMAT: <SHA-256>  <MD5>  <BYTES>  <PATH>
-cbc59515e53506111bfa539d67a4976ed0222618493da58c394272fecf21131a  7131cbf25328c7064789263dddfa427c       15055  evidence/plots/training_convergence.svg
-482e18f7be5ae5ca3c11d74273b2098b8e40236dda005b45f0a1adb95521c6e9  d94a69ffbe8f806c423cbbfe4f180427        9720  evidence/plots/ablation_4way_comparison.svg
-824c00dbfb0df9ae3327e82c9ce0c11fa432129bed598c37b2fe4b2852ffcb7a  8bc82c06b6a18c108b5a5af21baacff0       11110  evidence/plots/vram_budget_4gb.svg
+b16ef1084c0feb454098d033a5fdfb14de6343dbd3e0894f79bdc2874c1858f0  8a868d32aa46015d8632982ccebc49d8       15215  evidence/plots/training_convergence.svg
+fb0581c1085bef633003f399458874cdce48e51f8d0f2f5a28f2841856a2c080  09dbc3f3d5f6cfddf169bee67626fabf        9676  evidence/plots/ablation_4way_comparison.svg
+55959253368c7a5cdac6146f561237449df56bd87585e06a94e1bed9cc79b5b0  2d96d63e542d943d5b8c685253a77005       11112  evidence/plots/vram_budget_4gb.svg
 
 ## 4. Internal Checkpoint Artifacts Inside release_qwen25_qlora.zip
 # FORMAT: <SHA-256>  <MD5>  <BYTES>  <ZIP_ENTRY>

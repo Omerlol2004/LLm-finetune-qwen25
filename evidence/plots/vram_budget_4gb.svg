@@ -25,27 +25,27 @@
   <rect x="36" y="86" width="1028" height="320" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
 
   <!-- Gridlines for 0.0 GB, 1.0 GB, 2.0 GB, 3.0 GB, 4.0 GB (Hardware Ceiling) -->
-  <!-- x(gb) = 260 + gb * 135 -->
-  <!-- 0GB=260, 1GB=395, 2GB=530, 3GB=665, 4.0GB=800 -->
+  <!-- x(gb) = 300 + gb * 130 -->
+  <!-- 0GB=300, 1GB=430, 2GB=560, 3GB=690, 4.0GB=820 -->
   <g stroke="#1e293b" stroke-width="1" stroke-dasharray="4,4">
-    <line x1="260" y1="115" x2="260" y2="365"/>
-    <line x1="395" y1="115" x2="395" y2="365"/>
-    <line x1="530" y1="115" x2="530" y2="365"/>
-    <line x1="665" y1="115" x2="665" y2="365"/>
+    <line x1="300" y1="115" x2="300" y2="365"/>
+    <line x1="430" y1="115" x2="430" y2="365"/>
+    <line x1="560" y1="115" x2="560" y2="365"/>
+    <line x1="690" y1="115" x2="690" y2="365"/>
   </g>
 
   <!-- 4.0 GB Hardware Limit Vertical Line -->
-  <line x1="800" y1="102" x2="800" y2="375" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="7,5"/>
-  <rect x="708" y="94" width="184" height="22" rx="4" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
-  <text x="800" y="109" fill="#fca5a5" font-size="11" font-weight="700" text-anchor="middle">4.00 GB GPU HARDWARE LIMIT</text>
+  <line x1="820" y1="102" x2="820" y2="375" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="7,5"/>
+  <rect x="728" y="94" width="184" height="22" rx="4" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="820" y="109" fill="#fca5a5" font-size="11" font-weight="700" text-anchor="middle">4.00 GB GPU HARDWARE LIMIT</text>
 
   <!-- X-Axis Labels -->
   <g fill="#94a3b8" font-size="11.5" font-weight="600" text-anchor="middle">
-    <text x="260" y="388">0.0 GB</text>
-    <text x="395" y="388">1.0 GB</text>
-    <text x="530" y="388">2.0 GB</text>
-    <text x="665" y="388">3.0 GB</text>
-    <text x="800" y="388" fill="#f87171" font-weight="700">4.0 GB (Ceiling)</text>
+    <text x="300" y="388">0.0 GB</text>
+    <text x="430" y="388">1.0 GB</text>
+    <text x="560" y="388">2.0 GB</text>
+    <text x="690" y="388">3.0 GB</text>
+    <text x="820" y="388" fill="#f87171" font-weight="700">4.0 GB (Ceiling)</text>
     <text x="975" y="388" fill="#fca5a5">~18.5 GB (FP16 OOM)</text>
   </g>
 
@@ -53,78 +53,78 @@
   <!-- ROW 1: Standard FP16 Full Fine-Tuning (~18.5 GB -> OOM)                 -->
   <!-- ======================================================================= -->
   <g transform="translate(0, 132)">
-    <text x="54" y="22" fill="#f8fafc" font-size="13" font-weight="700">1. Standard FP16 Full Fine-Tune</text>
-    <text x="54" y="40" fill="#f87171" font-size="11" font-weight="600">~18.50 GB Total (4.6× Over Budget)</text>
+    <text x="48" y="22" fill="#f8fafc" font-size="12.5" font-weight="700">1. Standard FP16 Full Fine-Tune</text>
+    <text x="48" y="40" fill="#f87171" font-size="10.5" font-weight="600">~18.50 GB Total (4.6× Over Budget)</text>
 
     <!-- Weights 6.18 GB + Grads 6.18 GB + Optimizer 6.14 GB (compressed past 4GB break) -->
-    <rect x="260" y="6" width="250" height="42" rx="4" fill="#334155" stroke="#475569" stroke-width="1"/>
-    <text x="385" y="31" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">FP16 Weights: 6.18 GB</text>
+    <rect x="300" y="6" width="240" height="42" rx="4" fill="#334155" stroke="#475569" stroke-width="1"/>
+    <text x="420" y="31" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">FP16 Weights: 6.18 GB</text>
 
-    <rect x="512" y="6" width="230" height="42" rx="4" fill="#475569" stroke="#64748b" stroke-width="1"/>
-    <text x="627" y="31" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">FP16 Gradients: 6.18 GB</text>
+    <rect x="542" y="6" width="220" height="42" rx="4" fill="#475569" stroke="#64748b" stroke-width="1"/>
+    <text x="652" y="31" fill="#f8fafc" font-size="11.5" font-weight="700" text-anchor="middle">FP16 Gradients: 6.18 GB</text>
 
-    <rect x="744" y="6" width="286" height="42" rx="4" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
-    <rect x="744" y="6" width="286" height="42" rx="4" fill="url(#oomHatch)"/>
-    <text x="887" y="25" fill="#fecaca" font-size="11.5" font-weight="700" text-anchor="middle">AdamW States &amp; Activations: +6.14 GB</text>
-    <text x="887" y="41" fill="#fca5a5" font-size="10.5" font-weight="700" text-anchor="middle">❌ CUDA OUT OF MEMORY (~18.5 GB)</text>
+    <rect x="764" y="6" width="275" height="42" rx="4" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
+    <rect x="764" y="6" width="275" height="42" rx="4" fill="url(#oomHatch)"/>
+    <text x="901" y="25" fill="#fecaca" font-size="11.5" font-weight="700" text-anchor="middle">AdamW States &amp; Activations: +6.14 GB</text>
+    <text x="901" y="41" fill="#fca5a5" font-size="10.5" font-weight="700" text-anchor="middle">❌ CUDA OUT OF MEMORY (~18.5 GB)</text>
   </g>
 
   <!-- ======================================================================= -->
   <!-- ROW 2: 4-Bit NF4 QLoRA Training (3.88 GB Peak inside 4.00 GB Limit)     -->
-  <!-- Total width = 3.88 * 135 = 523.8 px (ends at x = 783.8, 16.2px before 800) -->
+  <!-- Total width = 3.88 * 130 = 504.4 px (ends at x = 804.4, 15.6px safety)   -->
   <!-- Segments:
-       - NF4 Base Weights: 1.92 GB -> 259.2 px (x=260 to 519.2)
-       - LoRA r=8 + Paged AdamW 8-bit: 0.48 GB -> 64.8 px (x=520 to 584.8)
-       - Checkpointed Activations (seq=448) & CUDA Context: 1.48 GB -> 199.8 px (x=586 to 784)
+       - NF4 Base Weights: 1.92 GB -> 249.6 px (x=300 to 549.6)
+       - LoRA r=8 + Paged AdamW 8-bit: 0.48 GB -> 62.4 px (x=551 to 613.4)
+       - Checkpointed Activations (seq=448) & CUDA Context: 1.48 GB -> 192.4 px (x=615 to 807.4)
   -->
   <!-- ======================================================================= -->
   <g transform="translate(0, 212)">
-    <text x="54" y="22" fill="#f8fafc" font-size="13" font-weight="700">2. 4-Bit NF4 QLoRA Training</text>
-    <text x="54" y="40" fill="#fbbf24" font-size="11" font-weight="600">3.88 GB Peak (3.86–3.90 GB)</text>
+    <text x="48" y="22" fill="#f8fafc" font-size="12.5" font-weight="700">2. 4-Bit NF4 QLoRA Training</text>
+    <text x="48" y="40" fill="#fbbf24" font-size="10.5" font-weight="600">3.88 GB Peak (3.86–3.90 GB)</text>
 
     <!-- Segment 1: NF4 Base Model (1.92 GB) -->
-    <rect x="260" y="6" width="259" height="42" rx="4" fill="#0284c7" stroke="#38bdf8" stroke-width="1"/>
-    <text x="389" y="25" fill="#ffffff" font-size="11.5" font-weight="700" text-anchor="middle">4-Bit NF4 Base Weights</text>
-    <text x="389" y="40" fill="#e0f2fe" font-size="10.5" text-anchor="middle">1.92 GB (Double Quant)</text>
+    <rect x="300" y="6" width="250" height="42" rx="4" fill="#0284c7" stroke="#38bdf8" stroke-width="1"/>
+    <text x="425" y="25" fill="#ffffff" font-size="11.5" font-weight="700" text-anchor="middle">4-Bit NF4 Base Weights</text>
+    <text x="425" y="40" fill="#e0f2fe" font-size="10.5" text-anchor="middle">1.92 GB (Double Quant)</text>
 
     <!-- Segment 2: LoRA + Paged AdamW (0.48 GB) -->
-    <rect x="521" y="6" width="65" height="42" rx="4" fill="#7c3aed" stroke="#a78bfa" stroke-width="1"/>
-    <text x="553" y="25" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">LoRA+Opt</text>
-    <text x="553" y="40" fill="#ede9fe" font-size="9.5" text-anchor="middle">0.48 GB</text>
+    <rect x="552" y="6" width="62" height="42" rx="4" fill="#7c3aed" stroke="#a78bfa" stroke-width="1"/>
+    <text x="583" y="25" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">LoRA+Opt</text>
+    <text x="583" y="40" fill="#ede9fe" font-size="9.5" text-anchor="middle">0.48 GB</text>
 
     <!-- Segment 3: Checkpointed Activations (1.48 GB) -->
-    <rect x="588" y="6" width="196" height="42" rx="4" fill="#d97706" stroke="#fbbf24" stroke-width="1"/>
-    <text x="686" y="25" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle">Grad-Ckpt Activations</text>
-    <text x="686" y="40" fill="#fef3c7" font-size="10.5" text-anchor="middle">1.48 GB (batch=1, seq=448)</text>
+    <rect x="616" y="6" width="192" height="42" rx="4" fill="#d97706" stroke="#fbbf24" stroke-width="1"/>
+    <text x="712" y="25" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle">Grad-Ckpt Activations</text>
+    <text x="712" y="40" fill="#fef3c7" font-size="10.5" text-anchor="middle">1.48 GB (batch=1, seq=448)</text>
 
     <!-- Peak Callout Badge -->
-    <rect x="812" y="9" width="225" height="36" rx="6" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
-    <text x="924" y="25" fill="#6ee7b7" font-size="11.5" font-weight="700" text-anchor="middle">✅ 3.88 GB Peak (Fits 4 GB GPU)</text>
-    <text x="924" y="39" fill="#a7f3d0" font-size="10" text-anchor="middle">120 MB Safety Margin Below OOM</text>
+    <rect x="830" y="9" width="215" height="36" rx="6" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+    <text x="937" y="25" fill="#6ee7b7" font-size="11" font-weight="700" text-anchor="middle">✅ 3.88 GB Peak (Fits 4 GB GPU)</text>
+    <text x="937" y="39" fill="#a7f3d0" font-size="10" text-anchor="middle">120 MB Safety Margin Below OOM</text>
   </g>
 
   <!-- ======================================================================= -->
   <!-- ROW 3: Hybrid CPU-RAG + 4-Bit GPU Inference (~2.48 GB GPU + 0 MB RAG)   -->
-  <!-- Total GPU width = 2.48 * 135 = 334.8 px (ends at x = 594.8)             -->
+  <!-- Total GPU width = 2.48 * 130 = 322.4 px (ends at x = 622.4)             -->
   <!-- ======================================================================= -->
   <g transform="translate(0, 292)">
-    <text x="54" y="22" fill="#f8fafc" font-size="13" font-weight="700">3. Hybrid CPU-RAG + GPU Inference</text>
-    <text x="54" y="40" fill="#10b981" font-size="11" font-weight="600">~2.48 GB GPU + 0 MB GPU RAG Overhead</text>
+    <text x="48" y="22" fill="#f8fafc" font-size="12.5" font-weight="700">3. Hybrid CPU-RAG + GPU Inference</text>
+    <text x="48" y="40" fill="#10b981" font-size="10.5" font-weight="600">~2.48 GB GPU (0 MB GPU Overhead)</text>
 
     <!-- Segment 1: NF4 Base Model (1.92 GB) -->
-    <rect x="260" y="6" width="259" height="42" rx="4" fill="#0284c7" stroke="#38bdf8" stroke-width="1"/>
-    <text x="389" y="25" fill="#ffffff" font-size="11.5" font-weight="700" text-anchor="middle">4-Bit NF4 Base Weights</text>
-    <text x="389" y="40" fill="#e0f2fe" font-size="10.5" text-anchor="middle">1.92 GB</text>
+    <rect x="300" y="6" width="250" height="42" rx="4" fill="#0284c7" stroke="#38bdf8" stroke-width="1"/>
+    <text x="425" y="25" fill="#ffffff" font-size="11.5" font-weight="700" text-anchor="middle">4-Bit NF4 Base Weights</text>
+    <text x="425" y="40" fill="#e0f2fe" font-size="10.5" text-anchor="middle">1.92 GB</text>
 
-    <!-- Segment 2: LoRA Adapter + KV Cache (0.56 GB -> 76 px) -->
-    <rect x="521" y="6" width="76" height="42" rx="4" fill="#059669" stroke="#34d399" stroke-width="1"/>
-    <text x="559" y="25" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">LoRA+KV</text>
-    <text x="559" y="40" fill="#d1fae5" font-size="9.5" text-anchor="middle">0.56 GB</text>
+    <!-- Segment 2: LoRA Adapter + KV Cache (0.56 GB -> 73 px) -->
+    <rect x="552" y="6" width="73" height="42" rx="4" fill="#059669" stroke="#34d399" stroke-width="1"/>
+    <text x="588" y="25" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">LoRA+KV</text>
+    <text x="588" y="40" fill="#d1fae5" font-size="9.5" text-anchor="middle">0.56 GB</text>
 
     <!-- Zero GPU VRAM Overhead Callout for CPU FAISS + MiniLM -->
-    <rect x="612" y="6" width="418" height="42" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,3"/>
-    <text x="821" y="24" fill="#38bdf8" font-size="11.5" font-weight="700" text-anchor="middle">CPU Offload: all-MiniLM-L6-v2 + FAISS IndexFlatIP = 0 MB GPU VRAM</text>
-    <text x="821" y="40" fill="#94a3b8" font-size="10.5" text-anchor="middle">1.52 GB Free GPU Headroom | ~90 MB System RAM | 3.43s Avg Generation Latency</text>
+    <rect x="635" y="6" width="410" height="42" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="840" y="24" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">CPU Offload: all-MiniLM-L6-v2 + FAISS IndexFlatIP = 0 MB GPU VRAM</text>
+    <text x="840" y="40" fill="#94a3b8" font-size="10" text-anchor="middle">1.52 GB Free GPU Headroom | ~90 MB System RAM | 3.43s Avg Generation Latency</text>
   </g>
 
   <!-- ======================================================================= -->
